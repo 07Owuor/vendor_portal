@@ -1,0 +1,1 @@
+web: gunicorn VendorPortal.wsgi --log-file -
