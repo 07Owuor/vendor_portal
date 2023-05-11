@@ -1,4 +1,56 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<!-- Custom styles for this page -->
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">P.O DataTable</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Partner ID</th>
+                        <th>Amount Total</th>
+                        <th>Amount Un-Taxed</th>
+                        <th>Date Approved</th>
+                        <th>Date Planned</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in po_data %}
+                    <tr>
+                        <td>{{a.name}}</td>
+                        <td>{{a.partner_id}}</td>
+                        <td>{{a.amount_total}}</td>
+                        <td>{{a.amount_untaxed}}</td>
+                        <td>{{a.date_approve}}</td>
+                        <td>{{a.date_planned}}</td>
+                        <td><a href="{% url 'vendor_po_details' po_id=a.id %}">View Order Line</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 {% endblock %}

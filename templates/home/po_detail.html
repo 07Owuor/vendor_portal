@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<!-- Custom styles for this page -->
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-2 text-gray-800"> P.O {{data.name}}</h1>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">P.O Details</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+        	<div class="col-6">
+        		<p>Name: {{data.name}}</p>
+                <p>Partener ID: {{data.partner_id}}</p>
+                <p>Currency ID: {{data.currency_id}}</p>
+                <p>Date Approved: {{data.date_approve}}</p>
+        	</div>
+        	<div class="col-6">
+        		<p>Amount Total: {{data.amount_total}}</p>
+        		<p>Amount Untaxed: {{data.amount_untaxed}}</p>
+        		<p>Amount tax: {{data.amount_tax}}</p>
+                <p>Date Planned: {{data.date_planned}}</p>
+        	</div>
+        </div>
+    </div>
+</div>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Order Lines</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                    	<th>ID</th>
+                        <th>Name</th>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Product Qty</th>
+                        <th>Price Unit</th>
+                        <th>Date Planned</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in data.order_line %}
+                    <tr>
+                    	<td>{{d.id}}</td>
+                        <td>{{d.name}}</td>
+                        <td>{{d.product_id}}</td>
+                        <td>{{d.product_name}}</td>
+                        <td>{{d.product_qty}}</td>
+                        <td>{{d.price_unit}}</td>
+                        <td>{{d.date_planned}}</td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}

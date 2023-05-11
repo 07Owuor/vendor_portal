@@ -55,27 +55,27 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Vendors
+                Vendor
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link" href="#" >
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>Bills</span>
+                    <span>Payments</span>
                 </a>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link" href="#" >
+                <a class="nav-link" href="{% url 'vendor_po' %}" >
                     <i class="fas fa-fw fa-cog"></i>
                     <span>P.O.s</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#" >
+                <a class="nav-link" href="{% url 'vendor_invoices' %}" >
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Invoices</span>
                 </a>
@@ -329,9 +329,8 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Blank Page</h1>
-
+                    {% block content %}
+                    {% endblock %}
                 </div>
                 <!-- /.container-fluid -->
 
@@ -379,15 +378,17 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+    {% block script %}
+    {% endblock %}
 
 </body>
 

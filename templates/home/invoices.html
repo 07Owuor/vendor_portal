@@ -1,4 +1,56 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<!-- Custom styles for this page -->
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Invoices DataTable</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Partner Name</th>
+                        <th>Amount Total</th>
+                        <th>Amount Un-Taxed</th>
+                        <th>Amount Taxed</th>
+                        <th>Invoice Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in data %}
+                    <tr>
+                        <td>{{a.name}}</td>
+                        <td>{{a.partner_name}}</td>
+                        <td>{{a.amount_total}}</td>
+                        <td>{{a.amount_untaxed}}</td>
+                        <td>{{a.amount_tax}}</td>
+                        <td>{{a.invoice_date}}</td>
+                        <td><a href="{% url 'vendor_invoice_detail' invoice_id=a.id%}">Order Line</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 {% endblock %}
