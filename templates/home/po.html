@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block css %}
 <!-- Custom styles for this page -->
@@ -31,8 +32,8 @@
                     <tr>
                         <td>{{a.name}}</td>
                         <td>{{a.partner_id}}</td>
-                        <td>{{a.amount_total}}</td>
-                        <td>{{a.amount_untaxed}}</td>
+                        <td>{{a.amount_total|intcomma}}</td>
+                        <td>{{a.amount_untaxed|intcomma}}</td>
                         <td>{{a.date_approve}}</td>
                         <td>{{a.date_planned}}</td>
                         <td><a href="{% url 'vendor_po_details' po_id=a.id %}">View Order Line</a></td>

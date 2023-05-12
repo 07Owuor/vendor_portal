@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block css %}
 <!-- Custom styles for this page -->
 <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -16,63 +19,228 @@
         <div class="row">
         	<div class="col-6">
         		<p>Name: {{data.name}}</p>
-                <p>Partener ID: {{data.partner_id}}</p>
-                <p>Currency ID: {{data.currency_id}}</p>
+                <p>Currency Name: {{data.currency_name}}</p>
                 <p>Date Approved: {{data.date_approve}}</p>
+                <p>Date Planned: {{data.date_planned}}</p>
         	</div>
         	<div class="col-6">
-        		<p>Amount Total: {{data.amount_total}}</p>
-        		<p>Amount Untaxed: {{data.amount_untaxed}}</p>
-        		<p>Amount tax: {{data.amount_tax}}</p>
-                <p>Date Planned: {{data.date_planned}}</p>
+        		<p>Amount Total: {{data.amount_total|intcomma}}</p>
+        		<p>Amount Untaxed: {{data.amount_untaxed|intcomma}}</p>
+        		<p>Amount tax: {{data.amount_tax|intcomma}}</p>
         	</div>
         </div>
     </div>
 </div>
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Order Lines</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                    	<th>ID</th>
-                        <th>Name</th>
-                        <th>Product ID</th>
-                        <th>Product Name</th>
-                        <th>Product Qty</th>
-                        <th>Price Unit</th>
-                        <th>Date Planned</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for d in data.order_line %}
-                    <tr>
-                    	<td>{{d.id}}</td>
-                        <td>{{d.name}}</td>
-                        <td>{{d.product_id}}</td>
-                        <td>{{d.product_name}}</td>
-                        <td>{{d.product_qty}}</td>
-                        <td>{{d.price_unit}}</td>
-                        <td>{{d.date_planned}}</td>
-                        <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                Add Receipt
-                            </button>
-                        </td>
-                        
-                    </tr>
-                    {% endfor %}
-                </tbody>
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-orders-tab" data-bs-toggle="tab" data-bs-target="#nav-orders" type="button" role="tab" aria-controls="nav-orders" aria-selected="true">Order Line</button>
+        <button class="nav-link" id="nav-receipts-tab" data-bs-toggle="tab" data-bs-target="#nav-receipts" type="button" role="tab" aria-controls="nav-receipts" aria-selected="false">Receipts</button>
+        <button class="nav-link" id="nav-bills-tab" data-bs-toggle="tab" data-bs-target="#nav-bills" type="button" role="tab" aria-controls="nav-bills" aria-selected="false">Bills</button>
+        <button class="nav-link" id="nav-payments-tab" data-bs-toggle="tab" data-bs-target="#nav-payments" type="button" role="tab" aria-controls="nav-payments" aria-selected="false">Payments</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent" >
+        <div class="tab-pane fade show active" id="nav-orders" role="tabpanel" aria-labelledby="nav-orders-tab">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Product Name</th>
+                                <th>Product Qty</th>
+                                <th>Price Unit</th>
+                                <th>Date Planned</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in data.order_line %}
+                            <tr>
+                                <td>{{d.id}}</td>
+                                <td>{{d.name}}</td>
+                                <td>{{d.product_name}}</td>
+                                <td>{{d.product_qty}}</td>
+                                <td>{{d.price_unit}}</td>
+                                <td>{{d.date_planned}}</td>
+                                <td>
+                                    <center>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                            Add Receipt
+                                        </button>
+                                    </center>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
 
-            </table>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="nav-receipts" role="tabpanel" aria-labelledby="nav-receipts-tab">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Product Name</th>
+                                <th>Product Qty</th>
+                                <th>Price Unit</th>
+                                <th>Date Planned</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in data.order_line %}
+                            <tr>
+                                <td>{{d.id}}</td>
+                                <td>{{d.name}}</td>
+                                <td>{{d.product_name}}</td>
+                                <td>{{d.product_qty}}</td>
+                                <td>{{d.price_unit}}</td>
+                                <td>{{d.date_planned}}</td>
+                                <td>
+                                    <center>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                            Add Receipt
+                                        </button>
+                                    </center>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-pane fade" id="nav-bills" role="tabpanel" aria-labelledby="nav-bills-tab">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Product Name</th>
+                                <th>Product Qty</th>
+                                <th>Price Unit</th>
+                                <th>Date Planned</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in data.order_line %}
+                            <tr>
+                                <td>{{d.id}}</td>
+                                <td>{{d.name}}</td>
+                                <td>{{d.product_name}}</td>
+                                <td>{{d.product_qty}}</td>
+                                <td>{{d.price_unit}}</td>
+                                <td>{{d.date_planned}}</td>
+                                <td>
+                                    <center>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                            Add Receipt
+                                        </button>
+                                    </center>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="nav-payments" role="tabpanel" aria-labelledby="nav-payments-tab">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Product Name</th>
+                                <th>Product Qty</th>
+                                <th>Price Unit</th>
+                                <th>Date Planned</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in data.order_line %}
+                            <tr>
+                                <td>{{d.id}}</td>
+                                <td>{{d.name}}</td>
+                                <td>{{d.product_name}}</td>
+                                <td>{{d.product_qty}}</td>
+                                <td>{{d.price_unit}}</td>
+                                <td>{{d.date_planned}}</td>
+                                <td>
+                                    <center>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                            Add Receipt
+                                        </button>
+                                    </center>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+    
 </div>
+{% endblock %}
+
+{% block modal %}
+<!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Receipt</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form method="POST" class="user">
+              
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Date Delivered">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Quantity Delivered">
+                </div>
+
+                <div class="form-group">
+                    <label for="grnAttachement">GRN/SRN Attachement</label>
+                    <input type="file" class="form-control"  id="grnAttachement" placeholder="GRN/SRN Attachement">
+                </div>
+                
+                <div class="clearfix"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            
+            <button type="button" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
 
 {% block script %}

@@ -21,9 +21,13 @@ def home_index(request):
     invoice_data = invoice_response.json()
     invoice_count = len(invoice_data["data"])
 
+    payment_data = payment_response.json()
+    payment_count = len(payment_data)
+
     data = {
         "po_count": po_count,
-        "invoice_count": invoice_count
+        "invoice_count": invoice_count,
+        "payment_count": payment_count
     }
     return render(request, template_name, data)
 

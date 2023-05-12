@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
+
 
 {% block css %}
 <!-- Custom styles for this page -->
@@ -31,9 +33,9 @@
                     <tr>
                         <td>{{a.name}}</td>
                         <td>{{a.partner_name}}</td>
-                        <td>{{a.amount_total}}</td>
-                        <td>{{a.amount_untaxed}}</td>
-                        <td>{{a.amount_tax}}</td>
+                        <td>{{a.amount_total|intcomma}}</td>
+                        <td>{{a.amount_untaxed|intcomma}}</td>
+                        <td>{{a.amount_tax|intcomma}}</td>
                         <td>{{a.invoice_date}}</td>
                         <td><a href="{% url 'vendor_invoice_detail' invoice_id=a.id%}">Order Line</a></td>
                     </tr>

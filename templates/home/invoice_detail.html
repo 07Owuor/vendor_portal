@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
+
 
 {% block css %}
 <!-- Custom styles for this page -->
@@ -22,10 +24,10 @@
                 <p>Invoice Date: {{data.invoice_date}}</p>
         	</div>
         	<div class="col-6">
-        		<p>Amount Total: {{data.amount_total}}</p>
-        		<p>Amount Untaxed: {{data.amount_untaxed}}</p>
-        		<p>Amount tax: {{data.amount_tax}}</p>
-                <p>Amount Residual: {{data.amount_residual}}</p>
+        		<p>Amount Total: {{data.amount_total|intcomma}}</p>
+        		<p>Amount Untaxed: {{data.amount_untaxed|intcomma}}</p>
+        		<p>Amount tax: {{data.amount_tax|intcomma}}</p>
+                <p>Amount Residual: {{data.amount_residual|intcomma}}</p>
                 <p>Date : {{data.date}}</p>
         	</div>
         </div>
