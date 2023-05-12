@@ -46,6 +46,7 @@
                         <th>Product Qty</th>
                         <th>Price Unit</th>
                         <th>Date Planned</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,6 +59,11 @@
                         <td>{{d.product_qty}}</td>
                         <td>{{d.price_unit}}</td>
                         <td>{{d.date_planned}}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                Add Receipt
+                            </button>
+                        </td>
                         
                     </tr>
                     {% endfor %}

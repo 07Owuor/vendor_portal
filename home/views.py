@@ -1,24 +1,25 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+import requests
 import json
 import os
 # Create your views here.
 
-po_file_path = os.path.join(settings.BASE_DIR, 'po_json.txt')
-invoice_file_path = os.path.join(settings.BASE_DIR, 'invoice_json.txt')
+po_response = requests.get("https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId=128628")
+
+invoice_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/invoices?partnerId=128608')
+
+payment_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/payments?partnerId=128628')
 
 
 def home_index(request):
     template_name = "home/home.html"
+    po_data = po_response.json()
+    po_count = len(po_data["data"])
 
-    with open(po_file_path) as json_file:
-        po_data = json.load(json_file)
-        po_count = len(po_data["data"])
-
-    with open(invoice_file_path) as json_file:
-        invoice_data = json.load(json_file)
-        invoice_count = len(invoice_data["data"])
+    invoice_data = invoice_response.json()
+    invoice_count = len(invoice_data["data"])
 
     data = {
         "po_count": po_count,
@@ -29,8 +30,8 @@ def home_index(request):
 
 def vendor_po(request):
     template_name = "home/po.html"
-    with open(po_file_path) as json_file:
-        po_data = json.load(json_file)
+    po_data = po_response.json()
+
     data = {
         "po_data": po_data["data"]
     }
@@ -41,10 +42,9 @@ def vendor_po(request):
 def po_detail(request, po_id):
     template_name = "home/po_detail.html"
 
-    with open(po_file_path) as json_file:
-        po_data = json.load(json_file)
-        json_data = po_data["data"]
-        content = [po for po in json_data if po.get('id') == po_id]
+    po_data = po_response.json()
+    json_data = po_data["data"]
+    content = [po for po in json_data if po.get('id') == po_id]
 
     data = {
         "data": content[0]
@@ -61,8 +61,7 @@ def vendor_bills(request):
 def vendor_invoices(request):
     template_name = "home/invoices.html"
 
-    with open(invoice_file_path) as json_file:
-        invoice_data = json.load(json_file)
+    invoice_data = invoice_response.json()
 
     data = {
        "data": invoice_data["data"]
@@ -73,13 +72,22 @@ def vendor_invoices(request):
 def invoice_detail(request, invoice_id):
     template_name = "home/invoice_detail.html"
 
-    with open(invoice_file_path) as json_file:
-        invoice_data = json.load(json_file)
-        json_data = invoice_data["data"]
-        content = [inv for inv in json_data if inv.get('id') == invoice_id]
+    invoice_data = invoice_response.json()
+    json_data = invoice_data["data"]
+    content = [inv for inv in json_data if inv.get('id') == invoice_id]
     
     data = {
         "data": content[0]
+    }
+
+    return render(request, template_name, data)
+
+
+def vendor_payments(request):
+    template_name = "home/payments.html"
+    payment_data = payment_response.json()
+    data = {
+        "data": payment_data["data"]
     }
 
     return render(request, template_name, data)

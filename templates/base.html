@@ -62,7 +62,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="#" >
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>Payments</span>
+                    <span>Request for Quotation</span>
                 </a>
             </li>
 
@@ -78,6 +78,13 @@
                 <a class="nav-link" href="{% url 'vendor_invoices' %}" >
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Invoices</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'vendor_payments' %}" >
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Payments</span>
                 </a>
             </li>
             
@@ -376,6 +383,42 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Receipt</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form method="POST" class="user">
+              
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Date Delivered">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Quantity Delivered">
+                </div>
+
+                <div class="form-group">
+                    <label for="grnAttachement">GRN/SRN Attachement</label>
+                    <input type="file" class="form-control"  id="grnAttachement" placeholder="GRN/SRN Attachement">
+                </div>
+                
+                <div class="clearfix"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            
+            <button type="button" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
