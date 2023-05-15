@@ -12,7 +12,7 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Invoices DataTable</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Bills DataTable</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -20,11 +20,12 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Partner Name</th>
-                        <th>Amount Total</th>
-                        <th>Amount Un-Taxed</th>
-                        <th>Amount Taxed</th>
                         <th>Invoice Date</th>
+                        <th>Total</th>
+                        <th>Excl. Tax</th>
+                        <th>Tax</th>
+                        <th>Ref.</th>
+                        <th>Payment Ref.</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -32,11 +33,12 @@
                     {% for a in data %}
                     <tr>
                         <td>{{a.name}}</td>
-                        <td>{{a.partner_name}}</td>
+                        <td>{{a.invoice_date}}</td>
                         <td>{{a.amount_total|intcomma}}</td>
                         <td>{{a.amount_untaxed|intcomma}}</td>
                         <td>{{a.amount_tax|intcomma}}</td>
-                        <td>{{a.invoice_date}}</td>
+                        <td>{{a.ref}}</td>
+                        <td>{{a.payment_reference}}</td>
                         <td><a href="{% url 'vendor_invoice_detail' invoice_id=a.id%}">Order Line</a></td>
                     </tr>
                     {% endfor %}

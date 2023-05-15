@@ -22,12 +22,23 @@
                 <p>Currency Name: {{data.currency_name}}</p>
                 <p>Date Approved: {{data.date_approve}}</p>
                 <p>Date Planned: {{data.date_planned}}</p>
+                <p>Invoice Status: {{data.invoice_status}}</p>
         	</div>
         	<div class="col-6">
         		<p>Amount Total: {{data.amount_total|intcomma}}</p>
         		<p>Amount Untaxed: {{data.amount_untaxed|intcomma}}</p>
         		<p>Amount tax: {{data.amount_tax|intcomma}}</p>
+                <p>Delivery Location: {{data.delivery_location_desc}}</p>
+                <p>Delivery mode: {{data.delivery_mode}}</p>
+                <p>Delivery Comments: {{data.delivery_comments}}</p>
         	</div>
+            <div class="col-12">
+                <center>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Download P.O
+                    </button>
+                </center>
+            </div>
         </div>
     </div>
 </div>

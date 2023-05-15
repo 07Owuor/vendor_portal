@@ -9,10 +9,10 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="h3 mb-2 text-gray-800"> P.O {{data.name}}</h1>
+<h1 class="h3 mb-2 text-gray-800"> Bills {{data.name}}</h1>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">P.O Details</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Bills Details</h6>
     </div>
     <div class="card-body">
         <div class="row">
@@ -45,11 +45,10 @@
                     <tr>
                     	<th>ID</th>
                         <th>Name</th>
-                        <th>Product ID</th>
                         <th>Product Name</th>
                         <th>Quantity</th>
                         <th>Price Unit</th>
-                        <th>Task Description</th>
+                        <th>Task Applied</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,7 +56,6 @@
                     <tr>
                     	<td>{{d.id}}</td>
                         <td>{{d.name}}</td>
-                        <td>{{d.product_id}}</td>
                         <td>{{d.product_name}}</td>
                         <td>{{d.quantity}}</td>
                         <td>{{d.price_unit}}</td>

@@ -19,11 +19,10 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Partner ID</th>
-                        <th>Amount Total</th>
-                        <th>Amount Un-Taxed</th>
+                        <th>Total</th>
+                        <th>Excl Tax</th>
+                        <th>Tax</th>
                         <th>Date Approved</th>
-                        <th>Date Planned</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -31,11 +30,10 @@
                     {% for a in po_data %}
                     <tr>
                         <td>{{a.name}}</td>
-                        <td>{{a.partner_id}}</td>
                         <td>{{a.amount_total|intcomma}}</td>
                         <td>{{a.amount_untaxed|intcomma}}</td>
+                        <td>{{a.amount_tax|intcomma}}</td>
                         <td>{{a.date_approve}}</td>
-                        <td>{{a.date_planned}}</td>
                         <td><a href="{% url 'vendor_po_details' po_id=a.id %}">View Order Line</a></td>
                     </tr>
                     {% endfor %}
