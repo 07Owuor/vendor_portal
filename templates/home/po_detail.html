@@ -13,24 +13,33 @@
 <h1 class="h3 mb-2 text-gray-800"> P.O {{data.name}}</h1>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">P.O Details</h6>
+        <div class="row">
+            <div class="col-10">
+                <h6 class="m-0 font-weight-bold text-primary">P.O Details</h6>
+            </div>
+            <div class="col-2">
+                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="right: 0;">
+                    Add Bills
+                </button>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <div class="row">
         	<div class="col-6">
-        		<p>Name: {{data.name}}</p>
-                <p>Currency Name: {{data.currency_name}}</p>
-                <p>Date Approved: {{data.date_approve}}</p>
-                <p>Date Planned: {{data.date_planned}}</p>
-                <p>Invoice Status: {{data.invoice_status}}</p>
+        		<p style="color: black;"><strong>Name</strong>: {{data.name}}</p>
+                <p style="color: black;"><strong>Currency Name</strong>: {{data.currency_name}}</p>
+                <p style="color: black;"><strong>Date Approved</strong>: {{data.date_approve}}</p>
+                <p style="color: black;"><strong>Date Planned</strong>: {{data.date_planned}}</p>
+                <p style="color: black;"><strong>Invoice Status</strong>: {{data.invoice_status}}</p>
+                <p style="color: black;"><strong>Delivery Comments</strong>: {{data.delivery_comments}}</p>
         	</div>
         	<div class="col-6">
-        		<p>Amount Total: {{data.amount_total|intcomma}}</p>
-        		<p>Amount Untaxed: {{data.amount_untaxed|intcomma}}</p>
-        		<p>Amount tax: {{data.amount_tax|intcomma}}</p>
-                <p>Delivery Location: {{data.delivery_location_desc}}</p>
-                <p>Delivery mode: {{data.delivery_mode}}</p>
-                <p>Delivery Comments: {{data.delivery_comments}}</p>
+        		<p style="color: black;"><strong>Amount Total</strong>: {{data.amount_total|intcomma}}</p>
+        		<p style="color: black;"><strong>Amount Untaxed</strong>: {{data.amount_untaxed|intcomma}}</p>
+        		<p style="color: black;"><strong>Amount tax</strong>: {{data.amount_tax|intcomma}}</p>
+                <p style="color: black;"><strong>Delivery Location</strong>: {{data.delivery_location_desc}}</p>
+                <p style="color: black;"><strong>Delivery mode</strong>: {{data.delivery_mode}}</p>
         	</div>
             <div class="col-12">
                 <center>
@@ -47,7 +56,7 @@
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link active" id="nav-orders-tab" data-bs-toggle="tab" data-bs-target="#nav-orders" type="button" role="tab" aria-controls="nav-orders" aria-selected="true">Order Line</button>
-        <button class="nav-link" id="nav-receipts-tab" data-bs-toggle="tab" data-bs-target="#nav-receipts" type="button" role="tab" aria-controls="nav-receipts" aria-selected="false">Receipts</button>
+        <button class="nav-link" id="nav-receipts-tab" data-bs-toggle="tab" data-bs-target="#nav-receipts" type="button" role="tab" aria-controls="nav-receipts" aria-selected="false">Delivery</button>
         <button class="nav-link" id="nav-bills-tab" data-bs-toggle="tab" data-bs-target="#nav-bills" type="button" role="tab" aria-controls="nav-bills" aria-selected="false">Bills</button>
         <button class="nav-link" id="nav-payments-tab" data-bs-toggle="tab" data-bs-target="#nav-payments" type="button" role="tab" aria-controls="nav-payments" aria-selected="false">Payments</button>
       </div>
@@ -64,8 +73,9 @@
                                 <th>Product Name</th>
                                 <th>Product Qty</th>
                                 <th>Price Unit</th>
+                                <th>Price Subtotal</th>
                                 <th>Date Planned</th>
-                                <th></th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -76,14 +86,8 @@
                                 <td>{{d.product_name}}</td>
                                 <td>{{d.product_qty}}</td>
                                 <td>{{d.price_unit}}</td>
+                                <td>{{d.price_subtotal}}</td>
                                 <td>{{d.date_planned}}</td>
-                                <td>
-                                    <center>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                            Add Receipt
-                                        </button>
-                                    </center>
-                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -105,7 +109,6 @@
                                 <th>Product Qty</th>
                                 <th>Price Unit</th>
                                 <th>Date Planned</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -117,13 +120,6 @@
                                 <td>{{d.product_qty}}</td>
                                 <td>{{d.price_unit}}</td>
                                 <td>{{d.date_planned}}</td>
-                                <td>
-                                    <center>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                            Add Receipt
-                                        </button>
-                                    </center>
-                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -145,7 +141,6 @@
                                 <th>Product Qty</th>
                                 <th>Price Unit</th>
                                 <th>Date Planned</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -157,13 +152,6 @@
                                 <td>{{d.product_qty}}</td>
                                 <td>{{d.price_unit}}</td>
                                 <td>{{d.date_planned}}</td>
-                                <td>
-                                    <center>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                            Add Receipt
-                                        </button>
-                                    </center>
-                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -184,7 +172,6 @@
                                 <th>Product Qty</th>
                                 <th>Price Unit</th>
                                 <th>Date Planned</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -196,13 +183,6 @@
                                 <td>{{d.product_qty}}</td>
                                 <td>{{d.price_unit}}</td>
                                 <td>{{d.date_planned}}</td>
-                                <td>
-                                    <center>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                            Add Receipt
-                                        </button>
-                                    </center>
-                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -222,20 +202,23 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Receipt</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Add Bill</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
            <form method="POST" class="user">
-              
+                {% csrf_token %}
                 <div class="form-group">
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Date Delivered">
                 </div>
+                {% for d in data.order_line %}
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Quantity Delivered">
+                    <input type="checkbox" id="{{d.id}}" name="p_o" value="{{d.id}}">
+                    <label for="{{d.id}}">{{d.product_name}}</label><br>
                 </div>
+                {% endfor %}
 
                 <div class="form-group">
                     <label for="grnAttachement">GRN/SRN Attachement</label>

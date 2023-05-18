@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from .forms import PurchaseOrderForm
 from django.conf import settings
 import requests
 import json
@@ -49,6 +50,10 @@ def po_detail(request, po_id):
     po_data = po_response.json()
     json_data = po_data["data"]
     content = [po for po in json_data if po.get('id') == po_id]
+    if request.method == 'POST':
+        form = PurchaseOrderForm(request.POST or None)
+    else:
+        form = PurchaseOrderForm()
 
     data = {
         "data": content[0]
