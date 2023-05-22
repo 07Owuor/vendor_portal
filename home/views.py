@@ -21,7 +21,6 @@ def home_index(request):
     po_data = po_response.json()
     po_count = len(po_data["data"])
 
-    print(invoice_response.json())
     invoice_data = invoice_response.json()
 
     invoice_count = len(invoice_data["data"])
@@ -52,6 +51,7 @@ def po_detail(request, po_id):
     template_name = "home/po_detail.html"
 
     po_data = po_response.json()
+   
     json_data = po_data["data"]
     content = [po for po in json_data if po.get('id') == po_id]
 
@@ -81,7 +81,7 @@ def post_po_receipt(request, po_id):
             "po_id": po_id,
             "delivery_note_attachment": None,
             "mimetype": "pdf",
-            "qty_received": str(qty_received)
+            "vals": str(qty_received)
         }
         print(payload)
         messages.success(request, "Delivery successfully posted")
