@@ -36,7 +36,7 @@
             </div>
             <div class="col-2">
                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="right: 0;">
-                    Add Bills
+                    Add Delivery
                 </button>
             </div>
         </div>
@@ -59,11 +59,18 @@
                 <p style="color: black;"><strong>Delivery mode</strong>: {{data.delivery_mode}}</p>
         	</div>
             <div class="col-12">
-                <center>
-                    <button type="button" class="btn btn-primary">
-                        Download P.O
-                    </button>
-                </center>
+                
+                <div class="row">
+                    <div class="col-10">
+                        
+                    </div>
+                    <div class="col-2">
+                         <button type="button" class="btn btn-primary" style="right: 0;">
+                            Download P.O
+                        </button>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -71,45 +78,18 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
 
-    <div class="container">
-  <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#tab1">Tab 1</a></li>
-    <li><a data-toggle="tab" href="#tab2">Tab 2</a></li>
-    <li><a data-toggle="tab" href="#tab3">Tab 3</a></li>
-  </ul>
+    <div class="container"> 
+      <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+        <li class="nav-link active" aria-selected="true" role="presentation"><a data-toggle="tab" href="#tab1">Order Line</a></li>
+        <li class="nav-link"><a data-toggle="tab" href="#tab2">Delivery</a></li>
+        <li class="nav-link"><a data-toggle="tab" href="#tab3">Bills</a></li>
+        <li class="nav-link"><a data-toggle="tab" href="#tab4">Payments</a></li>
+      </ul>
 
-  <div class="tab-content">
-    <div id="tab1" class="tab-pane fade in active">
-      <h3>Tab 1 Content</h3>
-      <p>This is the content for Tab 1.</p>
-    </div>
-    <div id="tab2" class="tab-pane fade">
-      <h3>Tab 2 Content</h3>
-      <p>This is the content for Tab 2.</p>
-    </div>
-    <div id="tab3" class="tab-pane fade">
-      <h3>Tab 3 Content</h3>
-      <p>This is the content for Tab 3.</p>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-    <nav>
-      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link active" id="nav-orders-tab" data-bs-toggle="tab" data-bs-target="#nav-orders" type="button" role="tab" aria-controls="nav-orders" aria-selected="true">Order Line</button>
-        <button class="nav-link" id="nav-receipts-tab" data-bs-toggle="tab" data-bs-target="#nav-receipts" type="button" role="tab" aria-controls="nav-receipts" aria-selected="false">Delivery</button>
-        <button class="nav-link" id="nav-bills-tab" data-bs-toggle="tab" data-bs-target="#nav-bills" type="button" role="tab" aria-controls="nav-bills" aria-selected="false">Bills</button>
-        <button class="nav-link" id="nav-payments-tab" data-bs-toggle="tab" data-bs-target="#nav-payments" type="button" role="tab" aria-controls="nav-payments" aria-selected="false">Payments</button>
-      </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent" >
-        <div class="tab-pane fade show active" id="nav-orders" role="tabpanel" aria-labelledby="nav-orders-tab">
-            <div class="card-body">
+      <div class="tab-content">
+        <div id="tab1" class="tab-pane fade in active">
+          <h3>Order Line</h3>
+          <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
@@ -142,9 +122,9 @@
                 </div>
             </div>
         </div>
-
-        <div class="tab-pane fade" id="nav-receipts" role="tabpanel" aria-labelledby="nav-receipts-tab">
-            <div class="card-body">
+        <div id="tab2" class="tab-pane fade">
+          <h3>Delivery</h3>
+          <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
@@ -174,9 +154,9 @@
                 </div>
             </div>
         </div>
-        
-        <div class="tab-pane fade" id="nav-bills" role="tabpanel" aria-labelledby="nav-bills-tab">
-            <div class="card-body">
+        <div id="tab3" class="tab-pane fade">
+          <h3>Bills</h3>
+          <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
@@ -205,9 +185,9 @@
                 </div>
             </div>
         </div>
-
-        <div class="tab-pane fade" id="nav-payments" role="tabpanel" aria-labelledby="nav-payments-tab">
-            <div class="card-body">
+        <div id="tab4" class="tab-pane fade">
+          <h3>Payments</h3>
+          <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
@@ -237,6 +217,7 @@
                 </div>
             </div>
         </div>
+      </div>
     </div>
     
 </div>
@@ -256,17 +237,18 @@
           <div class="modal-body">
            <form method="POST" class="user" id="poForm">  
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered">
+                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
                 </div>
                 {% for d in data.order_line %}
                 <div class="form-group">
+                    <label for="{{d.id}}" style="color: black;">{{d.product_name}}</label>
                     <input type="text" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
-                        aria-describedby="emailHelp" placeholder="Enter Quantity Delivered for {{d.product_name}}">
+                        aria-describedby="emailHelp" placeholder="Enter Quantity Delivered for {{d.product_name}}" required>
                 </div>
                 {% endfor %}
 
                 <div class="form-group">
-                    <label for="grnAttachement">GRN/SRN Attachement</label>
+                    <label for="grnAttachement">GRN/SRN Attachment</label>
                     <input type="file" class="form-control"  id="grnAttachement" name="receipt_attachement" placeholder="GRN/SRN Attachement">
                 </div>
                 

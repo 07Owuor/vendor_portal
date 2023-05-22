@@ -84,7 +84,7 @@ def post_po_receipt(request, po_id):
             "qty_received": str(qty_received)
         }
         print(payload)
-        messages.success(request, "Bill successfully posted")
+        messages.success(request, "Delivery successfully posted")
         post_response = requests.post(
             'https://odoo.develop.saner.gy/purchase_custom/create_delivery_receipt',
             json=payload

@@ -18,17 +18,17 @@
         <div class="row">
         	<div class="col-6">
         		<p style="color: black;"><strong>Name</strong>: {{data.name}}</p>
-                <p style="color: black;"><strong>Partener ID</strong>: {{data.partner_id}}</p>
-                <p style="color: black;"><strong>Partner Name</strong>: {{data.partner_name}}</p>
+                <p style="color: black;"><strong>Vendor</strong>: {{data.partner_name}}</p>
                 <p style="color: black;"><strong>Payment Reference</strong>:{{data.payment_reference}}</p>
                 <p style="color: black;"><strong>Invoice Date</strong>: {{data.invoice_date}}</p>
+                <p style="color: black;"><strong>Date </strong>: {{data.date}}</p>
         	</div>
         	<div class="col-6">
-        		<p style="color: black;"><strong>Amount Total</strong>: {{data.amount_total|intcomma}}</p>
-        		<p style="color: black;"><strong>Amount Untaxed</strong>: {{data.amount_untaxed|intcomma}}</p>
-        		<p style="color: black;"><strong>Amount tax</strong>: {{data.amount_tax|intcomma}}</p>
+        		<p style="color: black;"><strong>Gross</strong>: {{data.amount_total|intcomma}}</p>
+        		<p style="color: black;"><strong>Net</strong>: {{data.amount_untaxed|intcomma}}</p>
+        		<p style="color: black;"><strong>Tax</strong>: {{data.amount_tax|intcomma}}</p>
                 <p style="color: black;"><strong>Amount Residual</strong>: {{data.amount_residual|intcomma}}</p>
-                <p style="color: black;"><strong>Date </strong>: {{data.date}}</p>
+                
         	</div>
         </div>
     </div>
@@ -47,8 +47,8 @@
                         <th>Name</th>
                         <th>Product Name</th>
                         <th>Quantity</th>
-                        <th>Price Unit</th>
-                        <th>Task Applied</th>
+                        <th>Unit Price</th>
+                        <th>Tax Applied</th>
                     </tr>
                 </thead>
                 <tbody>
