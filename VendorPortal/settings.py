@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-&_by0^(w&xe&m9!h^9&s4x!#f(61b0tyacnc1)5l-ue)gk(0)d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'vendor-portal.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'vendor-portal.herokuapp.com', 'd452-197-232-46-10.ngrok-free.app']
 
 
 # Application definition
@@ -57,6 +57,35 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'VendorPortal.urls'
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    'https://d452-197-232-46-10.ngrok-free.app',
+    'https://vendor-portal.herokuapp.com',
+
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'https://d452-197-232-46-10.ngrok-free.app',
+    'https://vendor-portal.herokuapp.com',
+
+]
+CSRF_TRUSTED_ORIGINS = [
+    'https://d452-197-232-46-10.ngrok-free.app',
+    'https://vendor-portal.herokuapp.com',
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
 
 TEMPLATES = [
     {

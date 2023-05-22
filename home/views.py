@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import PurchaseOrderForm
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.contrib import messages
 from django.conf import settings
 import requests
 import json
@@ -50,16 +52,46 @@ def po_detail(request, po_id):
     po_data = po_response.json()
     json_data = po_data["data"]
     content = [po for po in json_data if po.get('id') == po_id]
-    if request.method == 'POST':
-        form = PurchaseOrderForm(request.POST or None)
-    else:
-        form = PurchaseOrderForm()
 
     data = {
         "data": content[0]
     }
 
     return render(request, template_name, data)
+
+
+@csrf_exempt
+def post_po_receipt(request, po_id):
+    po_data = po_response.json()
+    json_data = po_data["data"]
+    content = [po for po in json_data if po.get('id') == po_id]
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        qty_received = {}
+        date_delivered = request.POST.get('date_delivered')
+        data = content[0]
+        for line in data["order_line"]:
+            line_quantity = request.POST.get(str(line["id"]))
+            qty_received["po_line_id"] = int(line["id"])
+            qty_received["receipt_date"] = date_delivered
+            qty_received["qty_received"] = str(line_quantity)
+
+        payload = {
+            "po_id": po_id,
+            "delivery_note_attachment": None,
+            "mimetype": "pdf",
+            "qty_received": str(qty_received)
+        }
+        print(payload)
+        messages.success(request, "Bill successfully posted")
+        post_response = requests.post(
+            'https://odoo.develop.saner.gy/purchase_custom/create_delivery_receipt',
+            json=payload
+        )
+        print(post_response.json())
+        return JsonResponse({'success': True, 'data': post_response.json()})
+
+    messages.success(request, "Failed to post bill")
+    return JsonResponse({'success': False})
 
 
 def vendor_bills(request):
