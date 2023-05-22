@@ -11,7 +11,7 @@ import os
 
 po_response = requests.get("https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId=128628")
 
-invoice_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/invoices?partnerId=128608')
+invoice_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/invoices?partnerId=128628')
 
 payment_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/payments?partnerId=128628')
 
@@ -21,7 +21,9 @@ def home_index(request):
     po_data = po_response.json()
     po_count = len(po_data["data"])
 
+    print(invoice_response.json())
     invoice_data = invoice_response.json()
+
     invoice_count = len(invoice_data["data"])
 
     payment_data = payment_response.json()
