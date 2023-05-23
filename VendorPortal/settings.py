@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'home',
     'authenticator',
     'djf_surveys',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -177,6 +178,17 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join(BASE_DIR, "live-static-files", "static_root")
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+DEFAULT_FILE_STORAGE = 'UrbanSitters.storage_backends.MediaStorage'
+AWS_ACCESS_KEY_ID = "AKIASESHHEPULZU5L2FC"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = 'urbansitters'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_REGION_NAME = "us-west-2"
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

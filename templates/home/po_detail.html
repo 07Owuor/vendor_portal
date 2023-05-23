@@ -17,9 +17,15 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
+                        {% if message.tags == "success" %} 
                         <div class="h4 font-weight-bold text-success  mb-1">
                             {{ message }}
                         </div>
+                        {% else %}
+                        <div class="h4 font-weight-bold text-danger  mb-1">
+                            {{ message }}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -110,8 +116,8 @@
                                 <td>{{d.name}}</td>
                                 <td>{{d.product_name}}</td>
                                 <td>{{d.product_qty}}</td>
-                                <td>{{d.price_unit}}</td>
-                                <td>{{d.price_subtotal}}</td>
+                                <td>{{d.price_unit|intcomma}}</td>
+                                <td>{{d.price_subtotal|intcomma}}</td>
                                 <td>{{d.date_planned}}</td>
                             </tr>
                             {% endfor %}
@@ -143,7 +149,7 @@
                                 <td>{{d.name}}</td>
                                 <td>{{d.product_name}}</td>
                                 <td>{{d.product_qty}}</td>
-                                <td>{{d.price_unit}}</td>
+                                <td>{{d.price_unit|intcomma}}</td>
                                 <td>{{d.date_planned}}</td>
                             </tr>
                             {% endfor %}
@@ -174,7 +180,7 @@
                                 <td>{{d.name}}</td>
                                 <td>{{d.product_name}}</td>
                                 <td>{{d.product_qty}}</td>
-                                <td>{{d.price_unit}}</td>
+                                <td>{{d.price_unit|intcomma}}</td>
                                 <td>{{d.date_planned}}</td>
                             </tr>
                             {% endfor %}
@@ -206,7 +212,7 @@
                                 <td>{{d.name}}</td>
                                 <td>{{d.product_name}}</td>
                                 <td>{{d.product_qty}}</td>
-                                <td>{{d.price_unit}}</td>
+                                <td>{{d.price_unit|intcomma}}</td>
                                 <td>{{d.date_planned}}</td>
                             </tr>
                             {% endfor %}
@@ -234,7 +240,7 @@
             </button>
           </div>
           <div class="modal-body">
-           <form method="POST" class="user" id="poForm">  
+           <form method="POST" class="user" id="poForm" enctype="multipart/form-data">  
                 <div class="form-group">
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
                 </div>
@@ -248,7 +254,7 @@
 
                 <div class="form-group">
                     <label for="grnAttachement">GRN/SRN Attachment</label>
-                    <input type="file" class="form-control"  id="grnAttachement" name="receipt_attachement" placeholder="GRN/SRN Attachement" required> 
+                    <input type="file" class="form-control"  id="grnAttachement" name="receipt_attachment" placeholder="GRN/SRN Attachement" required> 
                 </div>
                 
                 <div class="clearfix"></div>
@@ -284,6 +290,7 @@
                     url: "{% url 'post_receipt' po_id=data.id %}", // Replace with your Django endpoint URL
                     data: formData,
                     dataType: 'json',
+                    mimeType: "multipart/form-data",
                     headers: {
                         "X-Requested-With": "XMLHttpRequest",
                     },
