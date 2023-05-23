@@ -51,7 +51,7 @@ def po_detail(request, po_id):
     template_name = "home/po_detail.html"
 
     po_data = po_response.json()
-   
+
     json_data = po_data["data"]
     content = [po for po in json_data if po.get('id') == po_id]
 
@@ -68,20 +68,23 @@ def post_po_receipt(request, po_id):
     json_data = po_data["data"]
     content = [po for po in json_data if po.get('id') == po_id]
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        qty_received = {}
+        vals = []
         date_delivered = request.POST.get('date_delivered')
         data = content[0]
         for line in data["order_line"]:
+            qty_received = {}
             line_quantity = request.POST.get(str(line["id"]))
             qty_received["po_line_id"] = int(line["id"])
-            qty_received["receipt_date"] = date_delivered
             qty_received["qty_received"] = str(line_quantity)
+            vals.append(qty_received)
 
         payload = {
             "po_id": po_id,
             "delivery_note_attachment": None,
+            "receipt_date": date_delivered,
             "mimetype": "pdf",
-            "vals": str(qty_received)
+            "data": None,
+            "vals": vals
         }
         print(payload)
         messages.success(request, "Delivery successfully posted")
