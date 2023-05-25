@@ -64,9 +64,26 @@ def po_detail(request, po_id):
 
     json_data = po_data["data"]
     content = [po for po in json_data if po.get('id') == po_id]
+    receipt_response = requests.get(
+        'https://odoo.develop.saner.gy/purchase_custom/purchase_order_receipts?partnerId=317694&po_id=8365'
+    )
+    receipt_data = receipt_response.json()
+
+    d_response = requests.get(
+        'https://odoo.develop.saner.gy/purchase_custom/po_delivery_receipt?po_id=9048'
+    )
+    d_data = d_response.json()
+
+    bills_response = requests.get(
+        'https://odoo.develop.saner.gy/purchase_custom/purchase_order_bills?partnerId=317694&po_id=8365'
+    )
+    bills_data = bills_response.json()
 
     data = {
-        "data": content[0]
+        "data": content[0],
+        "receipts": receipt_data["data"],
+        "delivery": d_data["data"],
+        "bills": bills_data["data"],
     }
 
     return render(request, template_name, data)
@@ -168,3 +185,13 @@ def vendor_payments(request):
     }
 
     return render(request, template_name, data)
+
+
+def vendor_rfq(request):
+    template_name = "home/rfq.html"
+    return render(request, template_name)
+
+
+def vendor_details(request):
+    template_name = "profile/profile.html"
+    return render(request, template_name)
