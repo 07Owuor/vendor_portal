@@ -350,6 +350,7 @@
           </div>
           <div class="modal-body">
            <form method="POST" class="user" id="poForm" enctype="multipart/form-data">  
+                {% csrf_token %}
                 <div class="form-group">
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
                 </div>

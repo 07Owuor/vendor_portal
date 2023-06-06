@@ -97,22 +97,21 @@ def post_po_receipt(request, po_id):
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         vals = []
         date_delivered = str(request.POST.get('date_delivered'))
-        receipt_attachment = request.FILES.get('receipt_attachment')
-        # receipt_name = receipt_attachment.content_type
-        # filename = f"{uuid.uuid4()}.{receipt_name}"
-        # print("File name >", filename)
-        # contents = receipt_attachment
-        # s3_path = "vendor-receipts"
-        # # Upload the file to S3
-        # s3.upload_fileobj(
-        #     io.BytesIO(contents),
-        #     settings.AWS_STORAGE_BUCKET_NAME,
-        #     f"{s3_path}/{filename}",
-        #
-        # )
-        # # Generate the URL for the uploaded file
-        # url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{s3_path}/{filename}"
-        # print("Receipt Url >", url)
+        receipt_attachment = request.POST.get['receipt_attachment']
+        filename = f"{uuid.uuid4()}.png"
+        print("File name >", filename)
+        contents = receipt_attachment
+        s3_path = "vendor-receipts"
+        # Upload the file to S3
+        s3.upload_fileobj(
+            io.BytesIO(contents),
+            settings.AWS_STORAGE_BUCKET_NAME,
+            f"{s3_path}/{filename}",
+
+        )
+        # Generate the URL for the uploaded file
+        url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{s3_path}/{filename}"
+        print("Receipt Url >", url)
         data = content[0]
         for line in data["order_line"]:
             qty_received = {}
