@@ -151,6 +151,13 @@ def vendor_bills(request):
     return render(request, template_name)
 
 
+@csrf_exempt
+def post_vendor_bill(request, po_id):
+    po_data = po_response.json()
+    json_data = po_data["data"]
+    content = [po for po in json_data if po.get('id') == po_id]
+
+
 def vendor_invoices(request):
     template_name = "home/invoices.html"
 
@@ -193,4 +200,10 @@ def vendor_rfq(request):
 
 def vendor_details(request):
     template_name = "profile/profile.html"
-    return render(request, template_name)
+    prof_response = requests.get('https://odoo.develop.saner.gy/vendor-account/vendor-details?partnerId=317694')
+    prof_data = prof_response.json()
+    data = {
+        "data": prof_data["data"],
+        "bank": prof_data["data"]["bank_details"],
+    }
+    return render(request, template_name, data)

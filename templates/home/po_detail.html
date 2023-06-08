@@ -37,12 +37,17 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <div class="row">
-            <div class="col-10">
+            <div class="col-8">
                 <h6 class="m-0 font-weight-bold text-primary">P.O Details</h6>
             </div>
             <div class="col-2">
-                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="right: 0;">
+                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float: right;">
                     Add Delivery
+                </button>
+            </div>
+            <div class="col-2">
+                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1" style="float: right;">
+                    Add Vendor Bill
                 </button>
             </div>
         </div>
@@ -374,6 +379,42 @@
         </div>
       </div>
     </div>
+<!-- Bills Modal -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel1">Add Bill</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form method="POST" class="user" id="billsForm" enctype="multipart/form-data">  
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="date" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
+                </div>
+                {% for d in data.order_line %}
+                <div class="form-group">
+                    <label for="{{d.id}}" style="color: black;">{{d.product_name}}</label>
+                    <input type="number" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail", oninput="validateInput(this, {{d.product_qty}})" 
+                        aria-describedby="emailHelp" placeholder="Enter quantity" min="0" max="{{d.product_qty}}" required>
+                    <div id="helperText" class="error-message"></div>
+                </div>
+                {% endfor %}
+                
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user" name="unit_price" id="exampleInputEmail" 
+                        aria-describedby="emailHelp" placeholder="Enter unit price" required>
+                </div>
+                <div class="clearfix"></div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
 
 {% block script %}
@@ -422,6 +463,53 @@
                 });
             });
         });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#billsForm').submit(function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                var formData = $(this).serialize(); // Serialize the form data
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'post_bill' po_id=data.id %}", // Replace with your Django endpoint URL
+                    data: formData,
+                    dataType: 'json',
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Handle success response
+                            reloadPage();
+                            console.log('Form submission success');
+                        } else {
+                            // Handle failure response
+                            console.log('Form submission failed');
+                            
+                        }
+                    },
+                    error: function(xhr, errmsg, err) {
+                        // Handle error
+                        console.log('AJAX request failed'+err+errmsg);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        function validateInput(input, max_value) {
+          var maxValue = max_value;
+          var value = parseInt(input.value);
+
+          if (value > maxValue) {
+            input.value = maxValue;
+            document.getElementById("helperText").textContent = 'Maximum value allowed is ' + maxValue;
+          } else {
+            document.getElementById("helperText").textContent = '';
+          }
+        }
     </script>
     
 {% endblock %}
