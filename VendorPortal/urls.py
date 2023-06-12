@@ -23,7 +23,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('login/', include('authenticator.urls')),
     path('surveys/', include('djf_surveys.urls')),
-    path('survey', include('survey.urls'))
+    path('survey/', include('survey.urls'))
 
 ]
 

@@ -22,3 +22,13 @@ def survey_home(request):
         'form': form
     }
     return render(request, template_name, data)
+
+
+def survey_dash(request):
+    template_name = 'survey/survey_dash.html'
+    surveys = Survey.objects.all().order_by('-created_at')
+    data = {
+        'surveys': surveys,
+    }
+
+    return render(request, template_name, data)
