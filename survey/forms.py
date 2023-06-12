@@ -52,3 +52,13 @@ class SurveyForm(forms.ModelForm):
     class Meta:
         model = Survey
         exclude = ('created_at',)
+
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+    format = ["%Y-%m-%d"]
+
+
+class DateRangeForm(forms.Form):
+    start_date = forms.DateField(widget=DateInput)
+    end_date = forms.DateField(widget=DateInput)

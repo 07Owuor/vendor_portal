@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
+{% load crispy_forms_tags %}
 
 {% block css %}
 <!-- Custom styles for this page -->
@@ -8,6 +9,27 @@
 {% endblock %}
 
 {% block content %}
+<h1 class="h3 mb-2 text-gray-800">Employee Surveys</h1>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Generate Report</h6>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+        {% csrf_token %}
+          <div class="row">
+                <div class="col-6">
+                    {{form.start_date|as_crispy_field}}
+                </div>
+                <div class="col-6">
+                    {{form.end_date|as_crispy_field}}
+                </div>
+            </div>
+            <center><button type="submit" class="btn btn-primary pull-right">Generate Report</button></center>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -35,7 +57,7 @@
                         <td>{{s.phone_number}}</td>
                         <td>{{s.mood}}</td>
                         <td>{{s.mood_explanation}}</td>
-                        <td>{{s.created_at}}</td>
+                        <td>{{s.created_at|date:"Y-m-d"}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
