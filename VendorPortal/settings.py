@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'authenticator',
     'djf_surveys',
     'storages',
+    'survey',
+    'crispy_forms',
+    "crispy_bootstrap4",
 ]
 
 MIDDLEWARE = [
@@ -158,6 +161,8 @@ USE_TZ = True
 AUTH_USER_MODEL = 'authenticator.CustomUser'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 FILE_UPLOAD_PERMISSIONS = 0o644
 

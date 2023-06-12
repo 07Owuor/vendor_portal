@@ -22,7 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
     path('login/', include('authenticator.urls')),
-    path('surveys/', include('djf_surveys.urls'))
+    path('surveys/', include('djf_surveys.urls')),
+    path('survey', include('survey.urls'))
 
 ]
 

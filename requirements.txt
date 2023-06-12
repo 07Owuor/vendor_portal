@@ -3,8 +3,10 @@ boto3==1.26.138
 botocore==1.29.138
 certifi==2023.5.7
 charset-normalizer==3.1.0
+crispy-bootstrap4==2022.1
 dj-database-url==2.0.0
 Django==4.2.1
+django-crispy-forms==2.0
 django-form-surveys==1.8.2
 django-storages==1.13.2
 gunicorn==20.1.0
