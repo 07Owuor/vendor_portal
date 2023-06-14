@@ -35,10 +35,10 @@ def survey_dash(request):
     concerned_survey = Survey.objects.filter(mood='Concerned')
     sad_survey = Survey.objects.filter(mood='Sad')
 
-    percent_happy = (happy_survey.count()/surveys.count())*100
-    percent_okay = (okay_survey.count()/surveys.count())*100
-    percent_concerned = (concerned_survey.count()/surveys.count())*100
-    percent_sad = (sad_survey.count()/surveys.count())*100
+    percent_happy = (happy_survey.count()/surveys.count())*100 if happy_survey.count() > 1 else 0
+    percent_okay = (okay_survey.count()/surveys.count())*100 if okay_survey.count() > 1 else 0
+    percent_concerned = (concerned_survey.count()/surveys.count())*100 if concerned_survey.count() > 1 else 0
+    percent_sad = (sad_survey.count()/surveys.count())*100 if sad_survey.count() > 1 else 0
     if request.method == 'POST':
         form = DateRangeForm(request.POST or None)
         if form.is_valid():
