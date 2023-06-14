@@ -30,6 +30,15 @@ def survey_home(request):
 def survey_dash(request):
     template_name = 'survey/survey_dash.html'
     surveys = Survey.objects.all().order_by('-created_at')
+    happy_survey = Survey.objects.filter(mood='Happy')
+    okay_survey = Survey.objects.filter(mood='Okay')
+    concerned_survey = Survey.objects.filter(mood='Concerned')
+    sad_survey = Survey.objects.filter(mood='Sad')
+
+    percent_happy = (happy_survey.count()/surveys.count())*100
+    percent_okay = (okay_survey.count()/surveys.count())*100
+    percent_concerned = (concerned_survey.count()/surveys.count())*100
+    percent_sad = (sad_survey.count()/surveys.count())*100
     if request.method == 'POST':
         form = DateRangeForm(request.POST or None)
         if form.is_valid():
@@ -61,7 +70,11 @@ def survey_dash(request):
 
     data = {
         'surveys': surveys,
-        'form': form
+        'form': form,
+        'happy': percent_happy,
+        'okay': percent_okay,
+        'concerned': percent_concerned,
+        'sad': percent_sad,
     }
 
     return render(request, template_name, data)
