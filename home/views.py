@@ -151,11 +151,64 @@ def vendor_bills(request):
     return render(request, template_name)
 
 
+def post_bill(request, po_id):
+    template_name = "home/update_bills.html"
+    po_data = po_response.json()
+
+    json_data = po_data["data"]
+    content = [po for po in json_data if po.get('id') == po_id]
+    data = {
+        "data": content[0],
+    }
+
+    return render(request, template_name, data)
+
+
 @csrf_exempt
 def post_vendor_bill(request, po_id):
     po_data = po_response.json()
     json_data = po_data["data"]
     content = [po for po in json_data if po.get('id') == po_id]
+    main_payload = {}
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        vals = []
+        date_delivered = str(request.POST.get('date_delivered'))
+
+        data = content[0]
+        for line in data["order_line"]:
+            bills_received = {}
+            line_quantity = request.POST.get(str(line["id"]))
+            bills_received["po_line_id"] = int(line["id"])
+            bills_received["quantity"] = str(line_quantity)
+            bills_received["price_unit"] = str(line["price_unit"])
+            bills_received["date_planned"] = date_delivered
+            bills_received["tax_ids"] = [2]
+            vals.append(bills_received)
+
+        payload = {
+            "partner_id": 128628,
+            "purchase_order_id": int(po_id),
+            "invoice_date": date_delivered,
+            "kra_control_invoice_number": str(request.POST.get('kra_control_invoice_number')),
+            "vendor_invoice_number": str(request.POST.get('vendor_invoice_number')),
+            "line_ids": vals
+        }
+        print(payload)
+        post_response = requests.post(
+            'https://odoo.develop.saner.gy/purchase_custom/create_vendor_bill',
+            json=payload
+        )
+        post_json = post_response.json()
+        post_message = post_json["message"]
+        if post_message != "success":
+            messages.error(request, str(post_message))
+        else:
+            messages.success(request, "Bill successfully posted")
+
+        return JsonResponse({'success': True, 'data': post_response.json()})
+
+    messages.error(request, "Failed to post bill")
+    return JsonResponse({'success': False})
 
 
 def vendor_invoices(request):
@@ -207,3 +260,21 @@ def vendor_details(request):
         "bank": prof_data["data"]["bank_details"],
     }
     return render(request, template_name, data)
+
+
+def confirm_kra(request):
+    if request.method == 'GET' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        invoice_number = request.GET.get('invoice_number')
+        url = "https://odoo.develop.saner.gy/purchase_custom/validate_kra_vendor_invoice?kra_control_invoice_number={}"\
+            .format(str(invoice_number))
+        response = requests.get(url)
+        response_json = response.json()
+        print(response_json)
+        if "message" in response_json:
+            kra_message = response_json["message"]
+            if kra_message != "Success":
+                return JsonResponse({'success': False, 'data': kra_message})
+            else:
+                return JsonResponse({'success': True, 'data': kra_message})
+
+        return JsonResponse({'success': False, 'data': "An Error Occurred"})

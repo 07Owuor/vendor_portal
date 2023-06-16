@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block css %}
+<!-- Custom styles for this page -->
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-2 text-gray-800">Post A Bill</h1>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="POST" class="user" id="billsForm" enctype="multipart/form-data">  
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="date" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="kra_control_invoice_number" 
+                    aria-describedby="emailHelp" placeholder="Control Invoice Number"  oninput="validateInput(this)" required>
+                    <div id="helperText" class="error-message"></div>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="vendor_invoice_number" aria-describedby="emailHelp" placeholder="Invoice Number" required>
+                </div>
+                {% for d in data.order_line %}
+                <div class="form-group">
+                    <label for="{{d.id}}" style="color: black;">{{d.product_name}}</label>
+                    <input type="number" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail", oninput="validateInput(this, {{d.billable_qty}})" 
+                        aria-describedby="emailHelp" placeholder="Enter quantity" min="0" max="{{d.billable_qty}}" required>
+                </div>
+                {% endfor %}
+                
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user" name="unit_price" id="exampleInputEmail" 
+                        aria-describedby="emailHelp" placeholder="Enter unit price" required>
+                </div>
+                <div class="clearfix"></div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#billsForm').submit(function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                var formData = $(this).serialize(); // Serialize the form data
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'update_bill' po_id=data.id %}", // Replace with your Django endpoint URL
+                    data: formData,
+                    dataType: 'json',
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Handle success response
+                            reloadPage();
+                            console.log('Form submission success');
+                        } else {
+                            // Handle failure response
+                            console.log('Form submission failed');
+                            
+                        }
+                    },
+                    error: function(xhr, errmsg, err) {
+                        // Handle error
+                        console.log('AJAX request failed'+err+errmsg);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        function validateInput(input) {
+          var value = parseInt(input.value);
+          
+          $.ajax(
+          	{
+                type: 'GET',
+                url: "{% url 'confirm_kra' %}", // Replace with your Django endpoint URL
+                data: {invoice_number: value},
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Handle success response
+                        console.log('KRA submission success');
+                    } else {
+                        // Handle failure response
+                        document.getElementById("helperText").textContent = 'Invalid KRA invoice number ';
+                        
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    // Handle error
+                    console.log('AJAX request failed'+err+errmsg);
+                }
+         	});
+        }
+    </script>
+    
+{% endblock %}
