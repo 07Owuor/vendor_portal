@@ -4,6 +4,7 @@ from .forms import SurveyForm, DateRangeForm
 from django.contrib import messages
 from .models import Survey
 from io import StringIO
+import math
 import csv
 
 # Create your views here.
@@ -35,10 +36,10 @@ def survey_dash(request):
     concerned_survey = Survey.objects.filter(mood='Concerned')
     sad_survey = Survey.objects.filter(mood='Sad')
 
-    percent_happy = (happy_survey.count()/surveys.count())*100 if happy_survey.count() > 1 else 0
-    percent_okay = (okay_survey.count()/surveys.count())*100 if okay_survey.count() > 1 else 0
-    percent_concerned = (concerned_survey.count()/surveys.count())*100 if concerned_survey.count() > 1 else 0
-    percent_sad = (sad_survey.count()/surveys.count())*100 if sad_survey.count() > 1 else 0
+    percent_happy = (happy_survey.count()/surveys.count())*100 if happy_survey.count() >= 1 else 0
+    percent_okay = (okay_survey.count()/surveys.count())*100 if okay_survey.count() >= 1 else 0
+    percent_concerned = (concerned_survey.count()/surveys.count())*100 if concerned_survey.count() >= 1 else 0
+    percent_sad = (sad_survey.count()/surveys.count())*100 if sad_survey.count() >= 1 else 0
     if request.method == 'POST':
         form = DateRangeForm(request.POST or None)
         if form.is_valid():
@@ -71,10 +72,10 @@ def survey_dash(request):
     data = {
         'surveys': surveys,
         'form': form,
-        'happy': percent_happy,
-        'okay': percent_okay,
-        'concerned': percent_concerned,
-        'sad': percent_sad,
+        'happy': int(percent_happy),
+        'okay': int(percent_okay),
+        'concerned': int(percent_concerned),
+        'sad': int(percent_sad),
     }
 
     return render(request, template_name, data)

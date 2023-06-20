@@ -29,21 +29,7 @@ class SurveyForm(forms.ModelForm):
         )
     )
 
-    email = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control form-control-user',
-        'type': 'text',
-        'placeholder': 'Email Address'
-    }))
-    name = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control form-control-user',
-        'type': 'text',
-        'placeholder': 'Your Name'
-    }))
-    phone_number = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control form-control-user',
-        'type': 'text',
-        'placeholder': 'Phone Number'
-    }))
+
     mood_explanation = forms.CharField(widget=forms.Textarea(attrs={
         'class': 'form-control',
         'placeholder': 'Please let us know any specific positive feedback or concern you might have'
