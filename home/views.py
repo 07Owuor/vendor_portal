@@ -14,7 +14,7 @@ import io
 # Create your views here.
 
 
-invoice_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/invoices?partnerId=128628')
+
 
 payment_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/payments?partnerId=128628')
 
@@ -32,12 +32,21 @@ def home_index(request):
 
     if 'partner_id' in request.session:
         partner_id = request.session['partner_id']
-        print(partner_id)
-        po_response = requests.get(f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}")
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
+        po_response = requests.get(
+            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}",
+            headers=headers
+        )
         po_data = po_response.json()
-        print(po_data)
 
         po_count = len(po_data["data"])
+
+        invoice_response = requests.get(
+            f'https://odoo.develop.saner.gy/purchase_custom/invoices?partnerId={partner_id}',
+            headers=headers)
 
         invoice_data = invoice_response.json()
 
@@ -60,9 +69,14 @@ def vendor_po(request):
     template_name = "home/po.html"
     if 'partner_id' in request.session:
         partner_id = request.session['partner_id']
-        print(partner_id)
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
         po_response = requests.get(
-            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}")
+            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}",
+            headers=headers
+        )
         po_data = po_response.json()
 
         data = {
@@ -78,25 +92,33 @@ def po_detail(request, po_id):
     template_name = "home/po_detail.html"
     if 'partner_id' in request.session:
         partner_id = request.session['partner_id']
-        print(partner_id)
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
         po_response = requests.get(
-            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}")
+            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}",
+            headers=headers
+        )
         po_data = po_response.json()
 
         json_data = po_data["data"]
         content = [po for po in json_data if po.get('id') == po_id]
         receipt_response = requests.get(
-            'https://odoo.develop.saner.gy/purchase_custom/purchase_order_receipts?partnerId=317694&po_id=8365'
+            f'https://odoo.develop.saner.gy/purchase_custom/purchase_order_receipts?partnerId=317694&po_id={partner_id}',
+            headers=headers
         )
         receipt_data = receipt_response.json()
 
         d_response = requests.get(
-            'https://odoo.develop.saner.gy/purchase_custom/po_delivery_receipt?po_id=9048'
+            f'https://odoo.develop.saner.gy/purchase_custom/po_delivery_receipt?po_id={partner_id}',
+            headers=headers
         )
         d_data = d_response.json()
 
         bills_response = requests.get(
-            f'https://odoo.develop.saner.gy/purchase_custom/purchase_order_bills?partnerId=29785&po_id={po_id}'
+            f'https://odoo.develop.saner.gy/purchase_custom/purchase_order_bills?partnerId={partner_id}&po_id={po_id}',
+            headers=headers
         )
         bills_data = bills_response.json()
 
@@ -117,9 +139,14 @@ def po_detail(request, po_id):
 def post_po_receipt(request, po_id):
     if 'partner_id' in request.session:
         partner_id = request.session['partner_id']
-        print(partner_id)
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
         po_response = requests.get(
-            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}")
+            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}",
+            headers=headers
+        )
         po_data = po_response.json()
         json_data = po_data["data"]
         content = [po for po in json_data if po.get('id') == po_id]
@@ -186,9 +213,14 @@ def post_bill(request, po_id):
     template_name = "home/update_bills.html"
     if 'partner_id' in request.session:
         partner_id = request.session['partner_id']
-        print(partner_id)
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
         po_response = requests.get(
-            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}")
+            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}",
+            headers=headers
+        )
         po_data = po_response.json()
 
         json_data = po_data["data"]
@@ -206,9 +238,14 @@ def post_bill(request, po_id):
 def post_vendor_bill(request, po_id):
     if 'partner_id' in request.session:
         partner_id = request.session['partner_id']
-        print(partner_id)
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
         po_response = requests.get(
-            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}")
+            f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}",
+            headers=headers
+        )
         po_data = po_response.json()
         json_data = po_data["data"]
         content = [po for po in json_data if po.get('id') == po_id]
@@ -274,33 +311,52 @@ def post_vendor_bill(request, po_id):
 
         messages.error(request, "Failed to post bill")
         return JsonResponse({'success': False})
-    else: 
+    else:
         return redirect('login')
 
 
 def vendor_invoices(request):
     template_name = "home/invoices.html"
+    if 'partner_id' in request.session:
+        partner_id = request.session['partner_id']
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
+        invoice_response = requests.get(f'https://odoo.develop.saner.gy/purchase_custom/invoices?partnerId={partner_id}',
+                                        headers=headers)
+        invoice_data = invoice_response.json()
 
-    invoice_data = invoice_response.json()
-
-    data = {
-       "data": invoice_data["data"]
-    }
-    return render(request, template_name, data)
+        data = {
+           "data": invoice_data["data"]
+        }
+        return render(request, template_name, data)
+    else:
+        return redirect('login')
 
 
 def invoice_detail(request, invoice_id):
     template_name = "home/invoice_detail.html"
+    if 'partner_id' in request.session:
+        partner_id = request.session['partner_id']
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
+        invoice_response = requests.get(
+            f'https://odoo.develop.saner.gy/purchase_custom/invoices?partnerId={partner_id}',
+            headers=headers)
+        invoice_data = invoice_response.json()
+        json_data = invoice_data["data"]
+        content = [inv for inv in json_data if inv.get('id') == invoice_id]
 
-    invoice_data = invoice_response.json()
-    json_data = invoice_data["data"]
-    content = [inv for inv in json_data if inv.get('id') == invoice_id]
-    
-    data = {
-        "data": content[0]
-    }
+        data = {
+            "data": content[0]
+        }
 
-    return render(request, template_name, data)
+        return render(request, template_name, data)
+    else:
+        return redirect('login')
 
 
 def vendor_payments(request):
