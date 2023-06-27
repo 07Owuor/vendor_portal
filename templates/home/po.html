@@ -22,6 +22,7 @@
                         <th>Gross</th>
                         <th>Net</th>
                         <th>Tax</th>
+                        <th>State</th>
                         <th>Date Approved</th>
                         
                     </tr>
@@ -33,6 +34,7 @@
                         <td>{{a.amount_total|intcomma}}</td>
                         <td>{{a.amount_untaxed|intcomma}}</td>
                         <td>{{a.amount_tax|intcomma}}</td>
+                        <td></td>
                         <td>{{a.date_approve}}</td>
                     </tr>
                     {% endfor %}

@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block css %}
+<!-- Custom styles for this page -->
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-2 text-gray-800"> RFQ {{data.purchase_req_name}}</h1>
+{% if messages %}
+<div class="row">
+    {% for message in messages %}
+    <div class="col-xl-12 col-md-12 mb-4 col-sm-12">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        {% if message.tags == "success" %} 
+                        <div class="h4 font-weight-bold text-success  mb-1">
+                            {{ message }}
+                        </div>
+                        {% else %}
+                        <div class="h4 font-weight-bold text-danger  mb-1">
+                            {{ message }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <div class="row">
+            <div class="col-10">
+                <h6 class="m-0 font-weight-bold text-primary">RFQ Details</h6>
+            </div>
+            <div class="col-2">
+                 
+            </div>
+        </div>
+    </div>
+</div>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="container-fluid"> 
+        <br>
+      <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+        <li class="nav-link active" aria-selected="true" aria-expanded="true" role="presentation"><a data-toggle="tab" href="#tab1">Line Items</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div id="tab1" class="tab-pane fade in active show">
+          
+          <div class="card-body">
+                <div class="table-responsive">
+                    <form method="POST">
+                        <table class="table table-bordered"  id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Quantity</th>
+                                    <th>Date</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>VAT</th>
+                                    <th>Net</th>
+                                    <th>Gross</th>
+                                    
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for d in data.line_ids %}
+                                <tr>
+                                    <td>{{d.product_id}}</td>
+                                    <td>{{d.product_name}}</td>
+                                    <td>{{d.product_qty}}</td>
+                                    <td>{{d.schedule_date}}</td>
+                                    <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Quantity" required></td>
+
+                                    <td><input type="number" class="form-control form-control-user" name="price_{{d.id}}" id="price_{{d.id}}"  min="1" step=".01" placeholder="Unit Price" required></td>
+                                    <td><center><input type="checkbox" name="vat_{{d.id}}" value="vat"></center></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <button type="submit" class="btn btn-primary">
+                            Submit Quotation
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block modal %}
+<!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Submit Quotation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form method="POST" class="user" id="poForm" enctype="multipart/form-data">  
+                {% csrf_token %}
+                {% for d in data.line_ids %}
+                <div class="form-group">
+                    <label for="{{d.id}}" style="color: black;">{{d.product_name}}</label>
+                    <input type="number" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
+                        aria-describedby="emailHelp" placeholder="Enter Quantity for {{d.product_name}}" required>
+                    <br>
+                    <input type="text" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
+                        aria-describedby="emailHelp" placeholder="Enter Unit Price for {{d.product_name}}" required>
+
+                    <input type="checkbox" name="VAT" value="Add VAT">
+
+                    <p>Unit Price Subtotal:</p>
+                    <p>VAT Value:</p>
+                    <p>Unit Price Total:</p>
+                    <p>Net Total</p>
+                    <p>Gross Total</p>
+                </div>
+                {% endfor %}
+
+                
+                <div class="clearfix"></div>
+                <button type="submit" class="btn btn-primary">Submit Quotation</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<!-- Page level plugins -->
+    <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+    <script type="text/javascript">
+     function reloadPage()
+     {
+       window.location.reload()
+     }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#poForm').submit(function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                var formData = $(this).serialize(); // Serialize the form data
+                $.ajax({
+                    type: 'POST',
+                    url: "#", // Replace with your Django endpoint URL
+                    data: formData,
+                    dataType: 'json',
+                    mimeType: "multipart/form-data",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Handle success response
+                            reloadPage();
+                            console.log('Form submission success');
+                        } else {
+                            // Handle failure response
+                            console.log('Form submission failed');
+                            
+                        }
+                    },
+                    error: function(xhr, errmsg, err) {
+                        // Handle error
+                        console.log('AJAX request failed'+err+errmsg);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        function calculateTotals(input) {
+            {% for d in data.line_ids %}
+              var quantity = document.getElementById().value;
+              var price = parseInt(input.value);
+
+              if (value > maxValue) {
+                input.value = maxValue;
+                document.getElementById("helperText").textContent = 'Maximum value allowed is ' + maxValue;
+              } else {
+                document.getElementById("helperText").textContent = '';
+              }
+          {% endfor %}
+        }
+    </script>
+{% endblock %}

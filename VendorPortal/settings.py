@@ -60,6 +60,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+AUTHENTICATION_BACKENDS = [
+    'VendorPortal.custom_auth_backend.CustomAuthBackend',
+]
+
+
 ROOT_URLCONF = 'VendorPortal.urls'
 
 CORS_ORIGIN_ALLOW_ALL = True

@@ -8,35 +8,73 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="h3 mb-2 text-gray-800">Post A Bill</h1>
+<h1 class="h3 mb-2 text-gray-800">Create Bill</h1>
 <div class="card shadow mb-4">
     <div class="card-body">
+
         <form method="POST" class="user" id="billsForm" enctype="multipart/form-data">  
                 {% csrf_token %}
-                <div class="form-group">
+                 <div class="form-group">
                     <input type="date" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="kra_control_invoice_number" 
-                    aria-describedby="emailHelp" placeholder="Control Invoice Number"  oninput="validateInput(this)" required>
+                    aria-describedby="emailHelp" placeholder="Control Invoice Number" required>
                     <div id="helperText" class="error-message"></div>
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="vendor_invoice_number" aria-describedby="emailHelp" placeholder="Invoice Number" required>
                 </div>
-                {% for d in data.order_line %}
-                <div class="form-group">
-                    <label for="{{d.id}}" style="color: black;">{{d.product_name}}</label>
-                    <input type="number" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail", oninput="validateInput(this, {{d.billable_qty}})" 
-                        aria-describedby="emailHelp" placeholder="Enter quantity" min="0" max="{{d.billable_qty}}" required>
-                </div>
-                {% endfor %}
                 
-                <div class="form-group">
-                    <input type="text" class="form-control form-control-user" name="unit_price" id="exampleInputEmail" 
-                        aria-describedby="emailHelp" placeholder="Enter unit price" required>
-                </div>
                 <div class="clearfix"></div>
+                <table class="table table-bordered"  id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Billable Quantity</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>VAT</th>
+                            <th>Net</th>
+                            <th>Gross</th>
+                            <th>Method</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data.order_line %}
+                        {% if d.billing_method == 'Ordered' %}
+                        <tr>
+                            <td>{{d.product_id}}</td>
+                            <td>{{d.product_name}}</td>
+                            <td>{{d.billable_qty}}</td>
+                            <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Quantity" required></td>
+
+                            <td><input type="number" class="form-control form-control-user" name="price_{{d.id}}" id="price_{{d.id}}"  min="1" step=".01" placeholder="Unit Price" required></td>
+                            <td><center><input type="checkbox" name="vat_{{d.id}}" value="vat"></center></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{d.billing_method}}</td>
+                        </tr>
+                        {% else %}
+                        <tr style="background: #EFEFEF; color: #AEAEAE;">
+                            <td>{{d.product_id}}</td>
+                            <td>{{d.product_name}}</td>
+                            <td>{{d.billable_qty}}</td>
+                            <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Quantity" disabled></td>
+
+                            <td><input type="number" class="form-control form-control-user" name="price_{{d.id}}" id="price_{{d.id}}"  min="1" step=".01" placeholder="Unit Price" disabled></td>
+                            <td><center><input type="checkbox" name="vat_{{d.id}}" value="vat" disabled></center></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{d.billing_method}}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+                <br>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
     </div>

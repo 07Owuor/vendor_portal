@@ -11,6 +11,8 @@ urlpatterns = [
     path('vendor-invoices', views.vendor_invoices, name='vendor_invoices'),
     path('vendor-invoices/<int:invoice_id>', views.invoice_detail, name='vendor_invoice_detail'),
     path('vendor-payments', views.vendor_payments, name='vendor_payments'),
+    path('vendor-rfq', views.vendor_rfq, name='vendor_rfq'),
+    path('vendor-rfq-detail/<str:rfq_name>', views.rfq_detail, name='rfq_detail'),
     path('vendor-profile', views.vendor_details, name='vendor_details'),
     path('confirm-kra', views.confirm_kra, name='confirm_kra'),
 ]

@@ -26,20 +26,18 @@
                         <th>Tax</th>
                         <th>Ref.</th>
                         <th>Payment Ref.</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for a in data %}
                     <tr>
-                        <td>{{a.name}}</td>
+                        <td><a href="{% url 'vendor_invoice_detail' invoice_id=a.id%}">{{a.name}}</a></td>
                         <td>{{a.invoice_date}}</td>
                         <td>{{a.amount_total|intcomma}}</td>
                         <td>{{a.amount_untaxed|intcomma}}</td>
                         <td>{{a.amount_tax|intcomma}}</td>
                         <td>{{a.ref}}</td>
                         <td>{{a.payment_reference}}</td>
-                        <td><a href="{% url 'vendor_invoice_detail' invoice_id=a.id%}">Order Line</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

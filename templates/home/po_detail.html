@@ -102,6 +102,8 @@
           
           <div class="card-body">
                 <div class="table-responsive">
+                    
+                    {% csrf_token %}
                     <table class="table table-bordered"  id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
@@ -113,6 +115,7 @@
                                 <th>Price Subtotal</th>
                                 <th>Tax</th>
                                 <th>Date Planned</th>
+                                
                                 
                             </tr>
                         </thead>
@@ -127,10 +130,10 @@
                                 <td>{{d.price_subtotal|intcomma}}</td>
                                 <td>{{d.price_tax|intcomma}}</td>
                                 <td>{{d.date_planned}}</td>
+                                
                             </tr>
                             {% endfor %}
                         </tbody>
-
                     </table>
                 </div>
             </div>
@@ -247,13 +250,13 @@
                                 <th>Tax</th>
                                 <th>Invoice Date</th>
                                 <th>Date</th>
-                                <th></th>
+                                <th>State</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for b in bills %}
                             <tr data-toggle="collapse" data-target="#{{d.id}}" class="clickable">
-                                <td>{{b.id}}</td>
+                                <td><a href="#" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">{{b.id}}</a></td>
                                 <td>{{b.name}}</td>
                                 <td>{{b.ref}}</td>
                                 <td>{{b.amount_total|intcomma}}</td>
@@ -261,34 +264,32 @@
                                 <td>{{b.amount_tax|intcomma}}</td>
                                 <td>{{b.invoice_date}}</td>
                                 <td>{{b.date}}</td>
-                                <td>
-                                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">
-                                        Line Items
-                                    </button>
-                                </td>
+                                <td>{{b.state}}</td>
                             </tr>
                             <tr class="collapse" id="collapseExample2"> 
                                 <td colspan="9">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="background: #DAE9F9; color: black;">
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
+                                               
                                                 <th>Name</th>
                                                 <th>Product Name</th>
                                                 <th>Qty</th>
                                                 <th>Unit Price</th>
                                                 <th>Tax</th>
+                                                <th>Excl. Tax</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for bo in b.order_line %}
                                             <tr>
-                                                <td>{{bo.id}}</td>
+                                                
                                                 <td>{{bo.name}}</td>
                                                 <td>{{bo.product_name}}</td>
                                                 <td>{{bo.quantity}}</td>
-                                                <td>{{bo.price_unit}}</td>
+                                                <td>{{bo.price_unit|intcomma}}</td>
                                                 <td>{{bo.tax_id_desc}}</td>
+                                                <td>{{bo.price_subtotal|intcomma}}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -425,6 +426,16 @@
                         console.log('AJAX request failed'+err+errmsg);
                     }
                 });
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#orderForm').submit(function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                var formData = $(this).serialize(); // Serialize the form data
+                console.log(formData)
             });
         });
     </script>
