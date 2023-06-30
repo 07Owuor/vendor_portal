@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="h3 mb-2 text-gray-800"> P.O {{data.name}}</h1>
+<h1 class="h3 mb-2 text-gray-800"> {{data.name}}</h1>
 {% if messages %}
 <div class="row">
     {% for message in messages %}
@@ -37,7 +37,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <div class="row">
-            <div class="col-8">
+            <div class="col-6">
                 <h6 class="m-0 font-weight-bold text-primary">P.O Details</h6>
             </div>
             <div class="col-2">
@@ -49,6 +49,11 @@
                  <a href="{% url 'post_bill' po_id=data.id %}" class="btn btn-primary" style="float: right;">
                     Add Vendor Bill
                 </a>
+            </div>
+            <div class="col-2">
+                 <button type="button" class="btn btn-primary" style="float: right;">
+                    Download <span><i class="fa fa-download" aria-hidden="true"></i></span>
+                </button>
             </div>
         </div>
     </div>
@@ -67,7 +72,7 @@
         		<p style="color: black;"><strong>Net</strong>: {{data.amount_untaxed|intcomma}}</p>
         		<p style="color: black;"><strong>Tax Amount</strong>: {{data.amount_tax|intcomma}}</p>
                 <p style="color: black;"><strong>Delivery Location</strong>: {{data.delivery_location_desc}}</p>
-                <p style="color: black;"><strong>Delivery mode</strong>: {{data.delivery_mode}}</p>
+                <p style="color: black;"><strong>Delivery Mode</strong>: {{data.delivery_mode}}</p>
         	</div>
             <div class="col-12">
                 
@@ -76,9 +81,7 @@
                         
                     </div>
                     <div class="col-2">
-                         <button type="button" class="btn btn-primary" style="right: 0;">
-                            Download P.O
-                        </button>
+                         
                     </div>
                 </div>
                 
@@ -107,7 +110,7 @@
                     <table class="table table-bordered"  id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                
                                 <th>Name</th>
                                 <th>Product Name</th>
                                 <th>Qty</th>
@@ -122,7 +125,7 @@
                         <tbody>
                             {% for d in data.order_line %}
                             <tr>
-                                <td>{{d.id}}</td>
+                                
                                 <td>{{d.name}}</td>
                                 <td>{{d.product_name}}</td>
                                 <td>{{d.product_qty}}</td>
@@ -145,7 +148,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                
                                 <th>Name</th>
                                 <th>Destination Name</th>
                                 <th>Scheduled Date</th>
@@ -157,7 +160,7 @@
                         <tbody>
                             {% for d in receipts %}
                             <tr data-toggle="collapse" data-target="#{{d.id}}" class="clickable">
-                                <td>{{d.id}}</td>
+                                
                                 <td>{{d.name}}</td>
                                 <td>{{d.location_dest_name}}</td>
                                 <td>{{d.scheduled_date}}</td>
@@ -209,7 +212,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                
                                 <th>Name</th>
                                 <th>PO Name</th>
                                 <th>Line Name</th>
@@ -221,7 +224,7 @@
                         <tbody>
                             {% for i in delivery %}
                             <tr>
-                                <td>{{i.id}}</td>
+                                
                                 <td>{{i.name}}</td>
                                 <td>{{i.po_name}}</td>
                                 <td>{{i.po_line_name}}</td>
@@ -358,18 +361,19 @@
            <form method="POST" class="user" id="poForm" enctype="multipart/form-data">  
                 {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
+                    <label for="date_delivered" style="color: black;"><strong>Date</strong></label>
+                    <input type="date" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" id="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
                 </div>
                 {% for d in data.order_line %}
                 <div class="form-group">
-                    <label for="{{d.id}}" style="color: black;">{{d.product_name}}</label>
+                    <label for="{{d.id}}" style="color: black;"><strong>{{d.product_name}}</strong></label>
                     <input type="text" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
-                        aria-describedby="emailHelp" placeholder="Enter Quantity Delivered for {{d.product_name}}" required>
+                        aria-describedby="emailHelp" placeholder="Enter Quantity in  {{d.product_uom_name}}" required>
                 </div>
                 {% endfor %}
 
                 <div class="form-group">
-                    <label for="grnAttachement">GRN/SRN Attachment</label>
+                    <label for="grnAttachement" style="color: black;"><strong>Attach Delivery Note</strong></label>
                     <input type="file" class="form-control"  id="grnAttachement" name="receipt_attachment" placeholder="GRN/SRN Attachement" required> 
                 </div>
                 

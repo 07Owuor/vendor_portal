@@ -11,7 +11,7 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">P.O DataTable</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Purchase Orders</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -34,7 +34,7 @@
                         <td>{{a.amount_total|intcomma}}</td>
                         <td>{{a.amount_untaxed|intcomma}}</td>
                         <td>{{a.amount_tax|intcomma}}</td>
-                        <td></td>
+                        <td>{{a.invoice_status|capfirst}}</td>
                         <td>{{a.date_approve}}</td>
                     </tr>
                     {% endfor %}

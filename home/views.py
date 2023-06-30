@@ -15,9 +15,6 @@ import io
 
 
 
-
-payment_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/payments?partnerId=128628')
-
 rfq_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/vendor_rfq?partnerId=128608')
 
 s3 = boto3.client(
@@ -51,6 +48,11 @@ def home_index(request):
         invoice_data = invoice_response.json()
 
         invoice_count = len(invoice_data["data"])
+
+        payment_response = requests.get(
+            f'https://odoo.develop.saner.gy/purchase_custom/payments?partnerId={partner_id}',
+            headers=headers
+        )
 
         payment_data = payment_response.json()
         payment_count = len(payment_data)
@@ -361,12 +363,27 @@ def invoice_detail(request, invoice_id):
 
 def vendor_payments(request):
     template_name = "home/payments.html"
-    payment_data = payment_response.json()
-    data = {
-        "data": payment_data["data"]
-    }
+    if 'partner_id' in request.session:
+        partner_id = request.session['partner_id']
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
 
-    return render(request, template_name, data)
+        payment_response = requests.get(
+            f'https://odoo.develop.saner.gy/purchase_custom/payments?partnerId={partner_id}',
+            headers=headers
+        )
+        payment_data = payment_response.json()
+        print("Payment Data >", payment_data)
+        data = {
+            "data": payment_data["data"]
+        }
+
+        return render(request, template_name, data)
+
+    else:
+        return redirect('login')
 
 
 def vendor_rfq(request):
