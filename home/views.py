@@ -15,7 +15,7 @@ import io
 
 
 
-rfq_response = requests.get('https://odoo.develop.saner.gy/purchase_custom/vendor_rfq?partnerId=128608')
+
 
 s3 = boto3.client(
     "s3",
@@ -155,21 +155,21 @@ def post_po_receipt(request, po_id):
         if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             vals = []
             date_delivered = str(request.POST.get('date_delivered'))
-            receipt_attachment = request.POST.get['receipt_attachment']
-            filename = f"{uuid.uuid4()}.png"
-            print("File name >", filename)
-            contents = receipt_attachment
-            s3_path = "vendor-receipts"
-            # Upload the file to S3
-            s3.upload_fileobj(
-                io.BytesIO(contents),
-                settings.AWS_STORAGE_BUCKET_NAME,
-                f"{s3_path}/{filename}",
-
-            )
-            # Generate the URL for the uploaded file
-            url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{s3_path}/{filename}"
-            print("Receipt Url >", url)
+            # receipt_attachment = request.POST.get['receipt_attachment']
+            # filename = f"{uuid.uuid4()}.png"
+            # print("File name >", filename)
+            # contents = receipt_attachment
+            # s3_path = "vendor-receipts"
+            # # Upload the file to S3
+            # s3.upload_fileobj(
+            #     io.BytesIO(contents),
+            #     settings.AWS_STORAGE_BUCKET_NAME,
+            #     f"{s3_path}/{filename}",
+            #
+            # )
+            # # Generate the URL for the uploaded file
+            # url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{s3_path}/{filename}"
+            # print("Receipt Url >", url)
             data = content[0]
             for line in data["order_line"]:
                 qty_received = {}
@@ -388,27 +388,52 @@ def vendor_payments(request):
 
 def vendor_rfq(request):
     template_name = "home/rfq.html"
-    rfq_data = rfq_response.json()
+    if 'partner_id' in request.session:
+        partner_id = request.session['partner_id']
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
+        rfq_response = requests.get(
+            f'https://odoo.develop.saner.gy/purchase_custom/vendor_rfq?partnerId={partner_id}',
+            headers=headers
+        )
+        rfq_data = rfq_response.json()
 
-    data = {
-        "rfq_data": rfq_data["data"]
-    }
+        data = {
+            "rfq_data": rfq_data["data"]
+        }
 
-    return render(request, template_name, data)
+        return render(request, template_name, data)
+    else:
+        return redirect('login')
 
 
 def rfq_detail(request, rfq_name):
     template_name = "home/rfq_detail.html"
-    rfq_data = rfq_response.json()
+    if 'partner_id' in request.session:
+        partner_id = request.session['partner_id']
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
+        rfq_response = requests.get(
+            f'https://odoo.develop.saner.gy/purchase_custom/vendor_rfq?partnerId={partner_id}',
+            headers=headers
+        )
 
-    json_data = rfq_data["data"]
-    content = [rfq for rfq in json_data if rfq.get('purchase_req_name') == rfq_name]
+        rfq_data = rfq_response.json()
 
-    data = {
-        "data": content[0]
-    }
+        json_data = rfq_data["data"]
+        content = [rfq for rfq in json_data if rfq.get('purchase_req_name') == rfq_name]
 
-    return render(request, template_name, data)
+        data = {
+            "data": content[0]
+        }
+
+        return render(request, template_name, data)
+
+    return redirect('login')
 
 
 def vendor_details(request):

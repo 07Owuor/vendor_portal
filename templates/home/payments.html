@@ -54,4 +54,22 @@
 
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+    <script>
+      var table = document.getElementById("dataTable");
+      var tBody = table.querySelector("tbody")
+      headerRows = table.querySelectorAll("tr")
+      var rows = tBody.querySelectorAll("tr");
+      var hCell = document.createElement("th");
+        var hRow = headerRows[0];
+        hCell.textContent = "#"
+        hRow.insertBefore(hCell, hRow.firstChild);
+
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var cell = document.createElement("td");
+        cell.textContent = i + 1; // Set the row number as the cell content
+        row.insertBefore(cell, row.firstChild); // Insert the new cell at the beginning of the row
+      }
+    </script>
 {% endblock %}

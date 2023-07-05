@@ -93,15 +93,17 @@
 <div class="card shadow mb-4">
     <div class="container-fluid"> 
       <ul class="nav nav-tabs" id="nav-tab" role="tablist">
-        <li class="nav-link active" aria-selected="true" aria-expanded="true" role="presentation"><a data-toggle="tab" href="#tab1">Order Line</a></li>
-        <li class="nav-link"><a data-toggle="tab" href="#tab2">Confirmed Receipts</a></li>
-        <li class="nav-link"><a data-toggle="tab" href="#tab3">Delivery</a></li>
-        <li class="nav-link"><a data-toggle="tab" href="#tab4">Bills</a></li>
-        <li class="nav-link"><a data-toggle="tab" href="#tab5">Payments</a></li>
+        <li role="presentation" class="nav-link active" aria-selected="true" aria-expanded="true"><a data-toggle="tab" role="tab" href="#tab1">Order Line</a></li>
+        <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab2">Confirmed Receipts</a></li>
+        <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab3">Delivery</a></li>
+        <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab4">Bills</a></li>
+        <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab5">Payments</a></li>
       </ul>
 
+      
+
       <div class="tab-content">
-        <div id="tab1" class="tab-pane fade in active show">
+        <div id="tab1" class="tab-pane fade in active show" role="tabpanel">
           
           <div class="card-body">
                 <div class="table-responsive">
@@ -141,7 +143,7 @@
                 </div>
             </div>
         </div>
-        <div id="tab2" class="tab-pane fade">
+        <div id="tab2" class="tab-pane fade" role="tabpanel">
           <!-- Confirmed Receipts  -->
           <div class="card-body">
                 <div class="table-responsive">
@@ -177,7 +179,7 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
+                                                
                                                 <th>Name</th>
                                                 <th>Line Name</th>
                                                 <th>Qty</th>
@@ -187,7 +189,7 @@
                                         <tbody>
                                             {% for l in d.receipt_line %}
                                             <tr>
-                                                <td>{{l.id}}</td>
+                                                
                                                 <td>{{l.name}}</td>
                                                 <td>{{l.purchase_line_name}}</td>
                                                 <td>{{l.product_uom_qty}}</td>
@@ -205,7 +207,7 @@
                 </div>
             </div>
         </div>
-        <div id="tab3" class="tab-pane fade">
+        <div id="tab3" class="tab-pane fade" role="tabpanel">
             <!-- Delivery -->
           <div class="card-body">
                 <div class="table-responsive">
@@ -238,14 +240,14 @@
                 </div>
             </div>
         </div>
-        <div id="tab4" class="tab-pane fade">
+        <div id="tab4" class="tab-pane fade" role="tabpanel">
          <!-- Bills -->
           <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                
                                 <th>Name</th>
                                 <th>Ref</th>
                                 <th>Gross</th>
@@ -259,8 +261,7 @@
                         <tbody>
                             {% for b in bills %}
                             <tr data-toggle="collapse" data-target="#{{d.id}}" class="clickable">
-                                <td><a href="#" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">{{b.id}}</a></td>
-                                <td>{{b.name}}</td>
+                                <td><a href="#" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">{{b.name}}</a></td>
                                 <td>{{b.ref}}</td>
                                 <td>{{b.amount_total|intcomma}}</td>
                                 <td>{{b.amount_untaxed|intcomma}}</td>
@@ -271,10 +272,9 @@
                             </tr>
                             <tr class="collapse" id="collapseExample2"> 
                                 <td colspan="9">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="background: #DAE9F9; color: black;">
+                                    <table class="table table-bordered" width="100%" cellspacing="0" style="background: #DAE9F9; color: black;">
                                         <thead>
                                             <tr>
-                                               
                                                 <th>Name</th>
                                                 <th>Product Name</th>
                                                 <th>Qty</th>
@@ -286,7 +286,6 @@
                                         <tbody>
                                             {% for bo in b.order_line %}
                                             <tr>
-                                                
                                                 <td>{{bo.name}}</td>
                                                 <td>{{bo.product_name}}</td>
                                                 <td>{{bo.quantity}}</td>
@@ -306,15 +305,13 @@
                 </div>
             </div>
         </div>
-        <div id="tab5" class="tab-pane fade">
+        <div id="tab5" class="tab-pane fade" role="tabpanel">
          <!-- Payments -->
           <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>
                                 <th>Product Name</th>
                                 <th>Product Qty</th>
                                 <th>Quantiy Received</th>
@@ -325,7 +322,7 @@
                         <tbody>
                             {% for d in data.order_line %}
                             <tr>
-                                <td>{{d.id}}</td>
+                                
                                 <td>{{d.name}}</td>
                                 <td>{{d.product_name}}</td>
                                 <td>{{d.product_qty}}</td>
@@ -456,4 +453,31 @@
           }
         }
     </script>
+    
+    <script>
+      var table = document.getElementById("dataTable");
+      var tBody = table.querySelector("tbody")
+      headerRows = table.querySelectorAll("tr")
+      var rows = tBody.querySelectorAll("tr");
+      var hCell = document.createElement("th");
+        var hRow = headerRows[0];
+        hCell.textContent = "#"
+        hRow.insertBefore(hCell, hRow.firstChild);
+
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var cell = document.createElement("td");
+        cell.textContent = i + 1; // Set the row number as the cell content
+        row.insertBefore(cell, row.firstChild); // Insert the new cell at the beginning of the row
+      }
+    </script>
+    
+
 {% endblock %}
+
+
+
+
+
+
