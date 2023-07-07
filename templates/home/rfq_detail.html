@@ -34,6 +34,44 @@
     {% endfor %}
 </div>
 {% endif %}
+<!-- DataTales Example -->
+{% if submitted_rfq %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">RFQ Submitted</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Gross</th>
+                        <th>Net</th>
+                        <th>Tax</th>
+                        <th>State</th>
+                        <th>Date Approved</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in rfq_content %}
+                    <tr>
+                        <td><a href="{% url 'vendor_po_details' po_id=a.id %}">{{a.name}}</a></td>
+                        <td>{{a.amount_total|intcomma}}</td>
+                        <td>{{a.amount_untaxed|intcomma}}</td>
+                        <td>{{a.amount_tax|intcomma}}</td>
+                        <td>{{a.state|capfirst}}</td>
+                        <td>{{a.date_approve}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <div class="row">
@@ -46,7 +84,6 @@
         </div>
     </div>
 </div>
-<!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="container-fluid"> 
         <br>
@@ -59,18 +96,26 @@
           
           <div class="card-body">
                 <div class="table-responsive">
-                    <form method="POST">
+                    <form method="POST" id="poForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" style="float: right;">
+                            Submit Quotation
+                        </button>
+
                         <table class="table table-bordered"  id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     
                                     <th>Name</th>
-                                    <th>Quantity</th>
                                     <th>Date</th>
+                                    <th>Required Quantity</th>
+                                    <th>UoM</th>
+                                    <th>Delivery Date</th>
                                     <th>Quantity</th>
                                     <th>Unit Price</th>
                                     <th>VAT</th>
                                     <th>Net</th>
+                                    <th>Tax</th>
                                     <th>Gross</th>
                                     
                                     
@@ -81,22 +126,47 @@
                                 <tr>
                                     
                                     <td>{{d.product_name}}</td>
-                                    <td>{{d.product_qty}}</td>
                                     <td>{{d.schedule_date}}</td>
-                                    <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Quantity" required></td>
+                                    <td>{{d.product_qty}}</td>
+                                    <td>{{d.product_uom_name}}</td>
+                                    <td>
+                                        <input type="date" class="form-control form-control-user date-field" name="date_{{d.id}}" id="date_{{d.id}}" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required oninput="validateDateInput(this, {{d.id}})">
+                                        <div id="dateHelperText"></div>
+                                    </td>
+                                    <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Enter Quantity" required></td>
 
-                                    <td><input type="number" class="form-control form-control-user" name="price_{{d.id}}" id="price_{{d.id}}"  min="1" step=".01" placeholder="Unit Price" required></td>
-                                    <td><center><input type="checkbox" name="vat_{{d.id}}" value="vat"></center></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td><input type="number" class="form-control form-control-user" name="price_{{d.id}}" id="price_{{d.id}}"  min="1" step=".01" placeholder="Enter Unit Price" required oninput="calcNet({{d.id}});"></td>
+                                    <td><center><input type="checkbox" name="vat_{{d.id}}" id="vat_{{d.id}}" value="vat" oninput="calcGross({{d.id}});"></center></td>
+                                    <td><p id="net_{{d.id}}"></p></td>
+                                    <td><p id="tax_{{d.id}}"></p></td>
+                                    <td><p id="gross_{{d.id}}"></p></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><strong>Sum Totals:</strong></td>
+                                    <td></td>
+                                    <td><h6 id="total_net" style="color: black;"></h6></td>
+                                    <td><h6 id="total_tax" style="color: black;"></h6></td>
+                                    <td><h6 id="total_gross" style="color: black;"></h6></td>
+                                </tr>
+                            </tfoot>
                         </table>
-                        <button type="submit" class="btn btn-primary">
-                            Submit Quotation
-                        </button>
+                        
                     </form>
+                    <br>
+                    <!-- <table style="color: black;" class="table table-bordered" width="100%" cellspacing="0">
+                        
+                        
+                    </table> -->
                 </div>
             </div>
         </div>
@@ -105,52 +175,13 @@
     </div>
     
 </div>
+{% endif %}
 {% endblock %}
 
-{% block modal %}
-<!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Submit Quotation</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-           <form method="POST" class="user" id="poForm" enctype="multipart/form-data">  
-                {% csrf_token %}
-                {% for d in data.line_ids %}
-                <div class="form-group">
-                    <label for="{{d.id}}" style="color: black;">{{d.product_name}}</label>
-                    <input type="number" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
-                        aria-describedby="emailHelp" placeholder="Enter Quantity for {{d.product_name}}" required>
-                    <br>
-                    <input type="text" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
-                        aria-describedby="emailHelp" placeholder="Enter Unit Price for {{d.product_name}}" required>
 
-                    <input type="checkbox" name="VAT" value="Add VAT">
-
-                    <p>Unit Price Subtotal:</p>
-                    <p>VAT Value:</p>
-                    <p>Unit Price Total:</p>
-                    <p>Net Total</p>
-                    <p>Gross Total</p>
-                </div>
-                {% endfor %}
-
-                
-                <div class="clearfix"></div>
-                <button type="submit" class="btn btn-primary">Submit Quotation</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-{% endblock %}
 
 {% block script %}
+
 <!-- Page level plugins -->
     <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
@@ -163,6 +194,8 @@
        window.location.reload()
      }
     </script>
+    
+    
     <script type="text/javascript">
         $(document).ready(function() {
             $('#poForm').submit(function(event) {
@@ -171,7 +204,7 @@
                 var formData = $(this).serialize(); // Serialize the form data
                 $.ajax({
                     type: 'POST',
-                    url: "#", // Replace with your Django endpoint URL
+                    url: "{% url 'post_rfq' rfq_name=data.purchase_req_name %}", // Replace with your Django endpoint URL
                     data: formData,
                     dataType: 'json',
                     mimeType: "multipart/form-data",
@@ -181,7 +214,7 @@
                     success: function(response) {
                         if (response.success) {
                             // Handle success response
-                            reloadPage();
+                            location.href="/vendor-rfq/"
                             console.log('Form submission success');
                         } else {
                             // Handle failure response
@@ -196,6 +229,158 @@
                 });
             });
         });
+    </script>
+    <script type="text/javascript">
+
+        function calcGross(d_id) {
+            event.preventDefault();
+            console.log("Calc Gross");
+            vat = document.getElementById("vat_"+d_id);
+            net_value = document.getElementById("net_"+d_id).innerHTML;
+            console.log("net_"+d_id);
+            
+            console.log("Net >"+net_value);
+            if (net_value == null || net_value == "") {
+                console.log("No Net Value");
+            }
+            else {
+                
+                if (vat.checked){
+                    tax = parseInt(net_value) * 0.16;
+                    gross = parseInt(net_value) + tax
+                    document.getElementById("gross_"+d_id).textContent =  gross;
+                    document.getElementById("tax_"+d_id).textContent =  tax;
+                }
+                else{
+                    gross = net_value;
+                    document.getElementById("gross_"+d_id).innerHTML =  gross;
+                    document.getElementById("tax_"+d_id).innerHTML =  0;
+                }
+                sumTotalGross();
+            }
+        }
+
+        function calcNet(d_id) {
+            quantity = document.getElementById("quantity_"+d_id);
+            
+            price = document.getElementById("price_"+d_id);
+            
+            net = parseInt(quantity.value) * parseInt(price.value);
+            document.getElementById("net_"+d_id).innerHTML =  net;
+            document.getElementById("gross_"+d_id).innerHTML =  net;
+            console.log(net);
+            sumTotalNet();
+        }
+           
+            
+    </script>
+
+    <script type="text/javascript">
+        function sumTotalGross(){
+            var table = document.getElementById("dataTable");
+            var rows = table.rows;
+            var headerRow = rows[0];
+            var sumGross = 0;
+
+            // Find the index of the "Net" column in the header row
+            var columnIndex = -1;
+            for (var i = 0; i < headerRow.cells.length; i++) {
+              if (headerRow.cells[i].textContent.trim() === "Gross") {
+                columnIndex = i;
+                break;
+              }
+            }
+
+            // Start from index 1 to skip the header row
+            for (var i = 1; i < rows.length-1; i++) {
+              var cell = rows[i].cells[columnIndex];
+              var cellValue = parseFloat(cell.textContent);
+              
+              if (!isNaN(cellValue)) {
+                sumGross += cellValue;
+                formatedGross = sumGross.toLocaleString("en-US");
+                document.getElementById("total_gross").textContent =  formatedGross;
+
+              }
+            }
+            sumTotalTax();
+
+            console.log("Sum of 'Net' column values:", sumGross);
+
+            
+        }
+    </script>
+    <script type="text/javascript">
+        function sumTotalTax(){
+            var table = document.getElementById("dataTable");
+            var rows = table.rows;
+            var headerRow = rows[0];
+            var sumTax = 0;
+
+            // Find the index of the "Net" column in the header row
+            var columnIndex = -1;
+            for (var i = 0; i < headerRow.cells.length; i++) {
+              if (headerRow.cells[i].textContent.trim() === "Tax") {
+                columnIndex = i;
+                break;
+              }
+            }
+
+            // Start from index 1 to skip the header row
+            for (var i = 1; i < rows.length-1; i++) {
+              var cell = rows[i].cells[columnIndex];
+              var cellValue = parseFloat(cell.textContent);
+              
+              if (!isNaN(cellValue)) {
+                sumTax += cellValue;
+                formatedTax = sumTax.toLocaleString("en-US");
+                document.getElementById("total_tax").textContent =  formatedTax;
+
+              }
+            }
+            
+
+            console.log("Sum of 'Tax' column values:", sumTax);
+
+            
+        }
+    </script>
+    <script type="text/javascript">
+        function sumTotalNet(){
+            // Assuming your table has an ID "myTable"
+            var table = document.getElementById("dataTable");
+            var rows = table.rows;
+            var headerRow = rows[0];
+            var sum = 0;
+
+            // Find the index of the "Net" column in the header row
+            var columnIndex = -1;
+            for (var i = 0; i < headerRow.cells.length; i++) {
+              if (headerRow.cells[i].textContent.trim() === "Net") {
+                columnIndex = i;
+                break;
+              }
+            }
+
+            // Start from index 1 to skip the header row
+            for (var i = 1; i < rows.length-1; i++) {
+              var cell = rows[i].cells[columnIndex];
+              var cellValue = parseFloat(cell.textContent);
+              
+              if (!isNaN(cellValue)) {
+                sum += cellValue;
+                formatedSum = sum.toLocaleString("en-US");
+                document.getElementById("total_net").textContent =  formatedSum;
+
+              }
+            }
+            
+
+            console.log("Sum of 'Net' column values:", sum);
+
+            
+
+        }
     </script>
     <script>
         function calculateTotals(input) {
@@ -230,4 +415,55 @@
         row.insertBefore(cell, row.firstChild); // Insert the new cell at the beginning of the row
       }
     </script>
+    <script>
+         $(document).ready(function validateDate() {
+            var currentDate = new Date();
+
+            // Get all the date fields in your HTML (assuming they have a common class or other selector)
+            var dateFields = document.getElementsByClassName('date-field');
+
+            // Iterate over each date field and set the minimum value to the current date
+            for (var i = 0; i < dateFields.length; i++) {
+              dateFields[i].min = currentDate.toISOString().split('T')[0];
+            }
+         });
+    </script>
+    <script>
+        function validateDateInput(input, d_id) {
+            var currentDate = new Date();
+
+            // Get all the date fields in your HTML (assuming they have a common class or other selector)
+            var dateInput = document.getElementById('date_'+d_id).value();
+            if (dateInput < currentDate){
+                document.getElementById("dateHelperText").textContent = 'Date cannot be earlier than today';
+            }
+            
+         }
+    </script>
+    
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

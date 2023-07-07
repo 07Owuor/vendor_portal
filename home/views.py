@@ -80,6 +80,7 @@ def vendor_po(request):
             headers=headers
         )
         po_data = po_response.json()
+        print(po_data)
 
         data = {
             "po_data": po_data["data"]
@@ -107,13 +108,13 @@ def po_detail(request, po_id):
         json_data = po_data["data"]
         content = [po for po in json_data if po.get('id') == po_id]
         receipt_response = requests.get(
-            f'https://odoo.develop.saner.gy/purchase_custom/purchase_order_receipts?partnerId=317694&po_id={partner_id}',
+            f'https://odoo.develop.saner.gy/purchase_custom/purchase_order_receipts?partnerId={partner_id}&po_id={po_id}',
             headers=headers
         )
         receipt_data = receipt_response.json()
 
         d_response = requests.get(
-            f'https://odoo.develop.saner.gy/purchase_custom/po_delivery_receipt?po_id={partner_id}',
+            f'https://odoo.develop.saner.gy/purchase_custom/po_delivery_receipt?po_id={po_id}',
             headers=headers
         )
         d_data = d_response.json()
@@ -152,24 +153,22 @@ def post_po_receipt(request, po_id):
         po_data = po_response.json()
         json_data = po_data["data"]
         content = [po for po in json_data if po.get('id') == po_id]
-        if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
             vals = []
             date_delivered = str(request.POST.get('date_delivered'))
-            # receipt_attachment = request.POST.get['receipt_attachment']
-            # filename = f"{uuid.uuid4()}.png"
-            # print("File name >", filename)
-            # contents = receipt_attachment
-            # s3_path = "vendor-receipts"
-            # # Upload the file to S3
-            # s3.upload_fileobj(
-            #     io.BytesIO(contents),
-            #     settings.AWS_STORAGE_BUCKET_NAME,
-            #     f"{s3_path}/{filename}",
-            #
-            # )
-            # # Generate the URL for the uploaded file
-            # url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{s3_path}/{filename}"
-            # print("Receipt Url >", url)
+            receipt_attachment = request.FILES.get('receipt_attachment')
+            print("Name >>", receipt_attachment)
+            if receipt_attachment:
+                file_name, file_extension = os.path.splitext(receipt_attachment.name)
+                filename = f"{uuid.uuid4()}.{file_extension}"
+
+                s3.upload_fileobj(receipt_attachment, settings.AWS_STORAGE_BUCKET_NAME, filename)
+
+                file_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{filename}"
+            else:
+                file_url = None
+
+            print(file_url)
             data = content[0]
             for line in data["order_line"]:
                 qty_received = {}
@@ -180,7 +179,7 @@ def post_po_receipt(request, po_id):
 
             payload = {
                 "po_id": po_id,
-                "delivery_note_attachment": None,
+                "delivery_note_attachment": file_url,
                 "receipt_date": date_delivered,
                 "mimetype": "pdf",
                 "data": None,
@@ -189,17 +188,17 @@ def post_po_receipt(request, po_id):
             print(payload)
             post_response = requests.post(
                 'https://odoo.develop.saner.gy/purchase_custom/create_delivery_receipt',
-                json=payload
+                json=payload,
+                headers=headers
             )
             post_json = post_response.json()
+            print("Post JSON", post_json)
             post_message = post_json["message"]
             if post_message != "success":
                 messages.error(request, str(post_message))
             else:
                 messages.success(request, "Delivery successfully posted")
-
-            return JsonResponse({'success': True, 'data': post_response.json()})
-
+                return JsonResponse({'success': True, 'data': post_response.json()})
         messages.error(request, "Failed to post bill")
         return JsonResponse({'success': False})
     else:
@@ -399,6 +398,7 @@ def vendor_rfq(request):
             headers=headers
         )
         rfq_data = rfq_response.json()
+        print(rfq_data)
 
         data = {
             "rfq_data": rfq_data["data"]
@@ -426,14 +426,109 @@ def rfq_detail(request, rfq_name):
 
         json_data = rfq_data["data"]
         content = [rfq for rfq in json_data if rfq.get('purchase_req_name') == rfq_name]
+        rfq_content = content[0]
+        if len(rfq_content["rfq_ids"]) > 0:
+            submitted_rfq = True
+            po_ids = rfq_content["rfq_ids"]
+            submitted_data = []
+            for po_id in po_ids:
+                po_response = requests.get(
+                    f"https://odoo.develop.saner.gy/purchase_custom/purchase_orders?partnerId={partner_id}",
+                    headers=headers
+                )
+                po_data = po_response.json()
+
+                json_data = po_data["data"]
+                content = [po for po in json_data if po.get('id') == po_id]
+                submitted_data.append(content[0])
+
+            rfq_contents = submitted_data
+
+        else:
+            submitted_rfq = False
+            rfq_contents = rfq_content
 
         data = {
-            "data": content[0]
+            "data": rfq_content,
+            "submitted_rfq": submitted_rfq,
+            "rfq_content": rfq_contents
         }
-
         return render(request, template_name, data)
 
     return redirect('login')
+
+
+def post_rfq(request, rfq_name):
+    if 'partner_id' in request.session:
+        partner_id = request.session['partner_id']
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
+        rfq_response = requests.get(
+            f'https://odoo.develop.saner.gy/purchase_custom/vendor_rfq?partnerId={partner_id}',
+            headers=headers
+        )
+
+        rfq_data = rfq_response.json()
+
+        json_data = rfq_data["data"]
+        content = [rfq for rfq in json_data if rfq.get('purchase_req_name') == rfq_name]
+
+        if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            vals = []
+            req_id = 0
+            data = content[0]
+            for line in data["line_ids"]:
+                line_id = str(line["id"])
+                line_quantity = request.POST.get(f"quantity_{line_id}")
+                line_price = request.POST.get(f"price_{line_id}")
+                date_delivered = str(request.POST.get(f"date_{line_id}"))
+                if line_quantity is not None and line_price is not None:
+                    rfq_received = {}
+                    rfq_received["id"] = int(line["id"])
+                    req_id = int(line["requisition_id"])
+                    rfq_received["ctt_product_qty"] = str(line_quantity)
+                    rfq_received["ctt_price_unit"] = str(line_price)
+                    rfq_received["ctt_schedule_date"] = date_delivered
+                    vat = request.POST.get(f"vat_{line_id}")
+                    if vat:
+                        rfq_received["taxes_id"] = [2]
+                    vals.append(rfq_received)
+
+            payload = {
+                "partner_id": partner_id,
+                "purchase_req_id": req_id,
+                "line_ids": vals
+            }
+
+            payload_array = [payload]
+
+            payload_data = {
+                "data": payload_array
+            }
+
+            print(payload_data)
+            post_response = requests.post(
+                'https://odoo.develop.saner.gy/purchase_custom/create_rfq',
+                json=payload_data,
+                headers=headers
+            )
+            post_json = post_response.json()
+            print(post_json)
+            post_message = post_json["message"]
+            if post_message != "success":
+                messages.error(request, str(post_message))
+            else:
+                messages.success(request, "RFQ successfully posted")
+                return redirect('vendor_rfq')
+
+            return JsonResponse({'success': True, 'data': post_response.json()})
+
+        messages.error(request, "Failed to post RFQ")
+        return JsonResponse({'success': False})
+    else:
+        return redirect('login')
 
 
 def vendor_details(request):

@@ -41,11 +41,21 @@ def login_user(request):
 
                     # Retrieve the access token from the API response
                     partner_id = user_data['partner_id']
-                    user_name = user_data['name']
+                    user_name = user_data['partner_display_name']
+                    company_id = user_data['company_id']
+                    if int(company_id) == 1:
+                        company = "Regen Organics"
+                    elif int(company_id) == 1:
+                        company = "Fresh Life LTD"
+                    else:
+                        company = "Sanergy Collaborative"
+                    user.first_name = user_name
+                    user.save()
 
                     # Store the access token in the session
                     request.session['partner_id'] = partner_id
                     request.session['user_name'] = user_name
+                    request.session['company'] = company
                     header = str(response.headers['Set-Cookie']).split(';')
                     print(header)
                     request.session['session_id'] = header[0]

@@ -20,9 +20,9 @@
                     <tr>
                         <th>Name</th>
                         <th>State</th>
-                        <th>RFQ Submitted</th>
                         <th>Currency Name</th>
                         <th>Scheduled Date</th>
+                        <th>RFQ Submitted</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,9 +30,13 @@
                     <tr>
                         <td><a href="{% url 'rfq_detail' rfq_name=a.purchase_req_name %}">{{a.purchase_req_name}}</a></td>
                         <td>{{a.state}}</td>
-                        <td>{{a.rfq_submitted}}</td>
                         <td>{{a.currency_name}}</td>
                         <td>{{a.schedule_date}}</td>
+                        {% if a.rfq_submitted %}
+                        <td><input type="checkbox" checked disabled> Submitted</td>
+                        {% else %}
+                        <td><input type="checkbox" disabled> Not Submitted</td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>

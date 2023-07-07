@@ -29,6 +29,7 @@
                 </thead>
                 <tbody>
                     {% for a in po_data %}
+                    {% if a.order_type == "PO" %}
                     <tr>
                         <td><a href="{% url 'vendor_po_details' po_id=a.id %}">{{a.name}}</a></td>
                         <td>{{a.amount_total|intcomma}}</td>
@@ -37,6 +38,8 @@
                         <td>{{a.invoice_status|capfirst}}</td>
                         <td>{{a.date_approve}}</td>
                     </tr>
+                    {% else %}
+                    {% endif %}
                     {% endfor %}
                 </tbody>
 

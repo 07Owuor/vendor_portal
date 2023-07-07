@@ -35,28 +35,34 @@
 </div>
 {% endif %}
 <div class="card shadow mb-4">
+    {% if data.state == "RFQ" %}
+    <div class="card-header py-3" style="background: #FFDC00;">
+        <h6 class="m-0 font-weight-bold" style="color: black;">RFQ Details</h6>
+    </div>
+    {% else %}
     <div class="card-header py-3">
         <div class="row">
-            <div class="col-6">
+            <div class="col-8">
                 <h6 class="m-0 font-weight-bold text-primary">P.O Details</h6>
             </div>
-            <div class="col-2">
-                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float: right;">
-                    Add Delivery
-                </button>
-            </div>
-            <div class="col-2">
-                 <a href="{% url 'post_bill' po_id=data.id %}" class="btn btn-primary" style="float: right;">
-                    Add Vendor Bill
-                </a>
-            </div>
-            <div class="col-2">
-                 <button type="button" class="btn btn-primary" style="float: right;">
+            <div class="col-4">
+                 
+                <button type="button" class="btn btn-primary" style="float: right;">
                     Download <span><i class="fa fa-download" aria-hidden="true"></i></span>
                 </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float: right; margin-right: 5px;">
+                    Add Delivery
+                </button>
+                <a href="{% url 'post_bill' po_id=data.id %}" class="btn btn-primary" style="float: right; margin-right: 5px;">
+                    Add Vendor Bill
+                </a>
+                
             </div>
+            
         </div>
+        
     </div>
+    {% endif %}
     <div class="card-body">
         <div class="row">
         	<div class="col-6">
@@ -94,10 +100,13 @@
     <div class="container-fluid"> 
       <ul class="nav nav-tabs" id="nav-tab" role="tablist">
         <li role="presentation" class="nav-link active" aria-selected="true" aria-expanded="true"><a data-toggle="tab" role="tab" href="#tab1">Order Line</a></li>
+        {% if data.state == "RFQ" %}
+        {% else %}
         <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab2">Confirmed Receipts</a></li>
         <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab3">Delivery</a></li>
         <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab4">Bills</a></li>
-        <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab5">Payments</a></li>
+        <!-- <li role="presentation" class="nav-link" ><a data-toggle="tab" role="tab" href="#tab5">Payments</a></li> -->
+        {% endif %}
       </ul>
 
       
@@ -143,6 +152,7 @@
                 </div>
             </div>
         </div>
+         
         <div id="tab2" class="tab-pane fade" role="tabpanel">
           <!-- Confirmed Receipts  -->
           <div class="card-body">
@@ -214,25 +224,25 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                
                                 <th>Name</th>
-                                <th>PO Name</th>
                                 <th>Line Name</th>
-                                <th>Qty Requested</th>
                                 <th>Qty Received</th>
+                                <th>Qty Accepted</th>
+                                <th>Product UoM</th>
                                 <th>Receipt Date</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for i in delivery %}
                             <tr>
-                                
                                 <td>{{i.name}}</td>
-                                <td>{{i.po_name}}</td>
                                 <td>{{i.po_line_name}}</td>
-                                <td>{{i.po_qty_requested}}</td>
-                                <td>{{i.po_qty_received}}</td>
+                                <td>{{i.qty_received}}</td>
+                                <td>{{i.qty_accepted}}</td>
+                                <td>{{i.po_product_uom}}</td>
                                 <td>{{i.receipt_date}}</td>
+                                <td>{{i.state}}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -305,8 +315,8 @@
                 </div>
             </div>
         </div>
-        <div id="tab5" class="tab-pane fade" role="tabpanel">
-         <!-- Payments -->
+        <!-- <div id="tab5" class="tab-pane fade" role="tabpanel">
+          Payments 
           <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -335,7 +345,8 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div> -->
+        
 
       </div>
     </div>
@@ -370,8 +381,8 @@
                 {% endfor %}
 
                 <div class="form-group">
-                    <label for="grnAttachement" style="color: black;"><strong>Attach Delivery Note</strong></label>
-                    <input type="file" class="form-control"  id="grnAttachement" name="receipt_attachment" placeholder="GRN/SRN Attachement" required> 
+                    <label for="receipt_attachment" style="color: black;"><strong>Attach Delivery Note</strong></label>
+                    <input type="file" class="form-control"  id="receipt_attachment" name="receipt_attachment" placeholder="Delivery Note Attachement" required> 
                 </div>
                 
                 <div class="clearfix"></div>
@@ -406,7 +417,8 @@
                     type: 'POST',
                     url: "{% url 'post_receipt' po_id=data.id %}", // Replace with your Django endpoint URL
                     data: formData,
-                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
                     mimeType: "multipart/form-data",
                     headers: {
                         "X-Requested-With": "XMLHttpRequest",
