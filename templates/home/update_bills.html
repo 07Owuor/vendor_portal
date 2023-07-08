@@ -72,21 +72,7 @@
                     </thead>
                     <tbody>
                         {% for d in data.order_line %}
-                        {% if d.billing_method == 'Ordered' %}
-                        <tr>
-                            
-                            <td>{{d.product_name}}</td>
-                            <td>{{d.billable_qty}}</td>
-                            <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Quantity" required></td>
-
-                            <td><input type="number" class="form-control form-control-user" name="price_{{d.id}}" id="price_{{d.id}}"  min="1" step=".01" placeholder="Unit Price" required oninput="calcNet({{d.id}});"></td>
-                            <td><center><input type="checkbox" name="vat_{{d.id}}" value="vat" id="vat_{{d.id}}" oninput="calcGross({{d.id}});"></center></td>
-                            <td><p id="net_{{d.id}}"></p></td>
-                            <td><p id="tax_{{d.id}}"></p></td>
-                            <td><p id="gross_{{d.id}}"></p></td>
-                            <td>{{d.billing_method}}</td>
-                        </tr>
-                        {% else %}
+                        {% if d.billable_qty == 0 %}
                         <tr style="background: #EFEFEF; color: #AEAEAE;">
                             
                             <td>{{d.product_name}}</td>
@@ -98,6 +84,21 @@
                             <td></td>
                             <td></td>
                             <td></td>
+                            <td>{{d.billing_method}}</td>
+                        </tr>
+                        
+                        {% else %}
+                        <tr>
+                            
+                            <td>{{d.product_name}}</td>
+                            <td>{{d.billable_qty}}</td>
+                            <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Quantity" required></td>
+
+                            <td><input type="number" class="form-control form-control-user" name="price_{{d.id}}" id="price_{{d.id}}"  min="1" step=".01" placeholder="Unit Price" required oninput="calcNet({{d.id}});"></td>
+                            <td><center><input type="checkbox" name="vat_{{d.id}}" value="vat" id="vat_{{d.id}}" oninput="calcGross({{d.id}});"></center></td>
+                            <td><p id="net_{{d.id}}"></p></td>
+                            <td><p id="tax_{{d.id}}"></p></td>
+                            <td><p id="gross_{{d.id}}"></p></td>
                             <td>{{d.billing_method}}</td>
                         </tr>
                         {% endif %}

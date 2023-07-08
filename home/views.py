@@ -80,7 +80,6 @@ def vendor_po(request):
             headers=headers
         )
         po_data = po_response.json()
-        print(po_data)
 
         data = {
             "po_data": po_data["data"]
