@@ -222,7 +222,6 @@ def post_bill(request, po_id):
             headers=headers
         )
         po_data = po_response.json()
-
         json_data = po_data["data"]
         content = [po for po in json_data if po.get('id') == po_id]
         data = {
