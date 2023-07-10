@@ -254,11 +254,10 @@ def post_vendor_bill(request, po_id):
 
             invoice_number = str(request.POST.get('kra_control_invoice_number'))
 
-            url = "https://odoo.develop.saner.gy/purchase_custom/validate_kra_vendor_invoice?kra_control_invoice_number={}" \
-                .format(str(invoice_number))
-            response = requests.get(url)
+            url = f"https://odoo.develop.saner.gy/purchase_custom/validate_kra_vendor_invoice?kra_control_invoice_number={invoice_number}"
+            response = requests.get(url, headers=headers)
             response_json = response.json()
-            print(response_json)
+            print("KRA Response", response_json)
             if "message" in response_json:
                 kra_message = response_json["message"]
                 if kra_message != "Success":
@@ -295,7 +294,8 @@ def post_vendor_bill(request, po_id):
                     print(payload)
                     post_response = requests.post(
                         'https://odoo.develop.saner.gy/purchase_custom/create_vendor_bill',
-                        json=payload
+                        json=payload,
+                        headers=headers
                     )
                     post_json = post_response.json()
                     print(post_json)

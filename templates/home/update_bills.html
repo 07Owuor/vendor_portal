@@ -138,6 +138,12 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
     <script type="text/javascript">
+     function reloadPage()
+     {
+       window.location.reload()
+     }
+    </script>
+    <script type="text/javascript">
         $(document).ready(function() {
             $('#billsForm').submit(function(event) {
                 event.preventDefault(); // Prevent the default form submission
@@ -154,11 +160,12 @@
                     success: function(response) {
                         if (response.success) {
                             // Handle success response
-                            reloadPage();
+                            llocation.href="/vendor-pos/{{data.id}}"
                             console.log('Form submission success');
                         } else {
                             // Handle failure response
                             console.log('Form submission failed');
+                            reloadPage();
                             
                         }
                     },
