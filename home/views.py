@@ -191,7 +191,6 @@ def post_po_receipt(request, po_id):
                 headers=headers
             )
             post_json = post_response.json()
-            print("Post JSON", post_json)
             post_message = post_json["message"]
             if post_message != "success":
                 messages.error(request, str(post_message))
@@ -262,7 +261,7 @@ def post_vendor_bill(request, po_id):
                 kra_message = response_json["message"]
                 if kra_message != "Success":
                     messages.error(request, kra_message)
-                    return redirect('post_vendor_bill', po_id=po_id)
+                    return redirect('update_bill', po_id=po_id)
 
                 else:
                     data = content[0]
@@ -284,7 +283,7 @@ def post_vendor_bill(request, po_id):
                     print(f"Invoice Number {request.POST.get('kra_control_invoice_number')}")
 
                     payload = {
-                        "partner_id": 128628,
+                        "partner_id": partner_id,
                         "purchase_order_id": int(po_id),
                         "invoice_date": date_delivered,
                         "kra_control_invoice_number": str(request.POST.get('kra_control_invoice_number')),
@@ -531,13 +530,26 @@ def post_rfq(request, rfq_name):
 
 def vendor_details(request):
     template_name = "profile/profile.html"
-    prof_response = requests.get('https://odoo.develop.saner.gy/vendor-account/vendor-details?partnerId=317694')
-    prof_data = prof_response.json()
-    data = {
-        "data": prof_data["data"],
-        "bank": prof_data["data"]["bank_details"],
-    }
-    return render(request, template_name, data)
+    if 'partner_id' in request.session:
+        partner_id = request.session['partner_id']
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
+        prof_response = requests.get(
+            f'https://odoo.develop.saner.gy/vendor-account/vendor-details?partnerId={partner_id}',
+            headers=headers
+        )
+        prof_data = prof_response.json()
+        
+        data = {
+            "data": prof_data["data"],
+            "bank": prof_data["data"]["bank_details"],
+        }
+        return render(request, template_name, data)
+    else:
+        return redirect('login')
+
 
 
 def confirm_kra(request):

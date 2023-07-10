@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="h3 mb-2 text-gray-800">Create Bill</h1>
+<h1 class="h3 mb-2 text-gray-800">Create Invoice</h1>
 {% if messages %}
 <div class="row">
     {% for message in messages %}
@@ -41,10 +41,10 @@
                 {% csrf_token %}
                  <div class="form-group">
                     <label for="date_delivered" style="color: black;"><strong>Date</strong></label>
-                    <input type="date" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" id="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
+                    <input type="date" class="form-control form-control-user date-field"id="exampleInputEmail" name="date_delivered" id="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
                 </div>
                 <div class="form-group">
-                    <label for="kra_control_invoice_number" style="color: black;"><strong>Control Invoice Number</strong></label>
+                    <label for="kra_control_invoice_number" style="color: black;"><strong>KRA Control Invoice Number</strong></label>
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="kra_control_invoice_number"  id="kra_control_invoice_number"
                     aria-describedby="emailHelp" placeholder="Enter Control Invoice Number" required>
                     <div id="helperText" class="error-message"></div>
@@ -75,7 +75,7 @@
                         {% if d.billable_qty == 0 %}
                         <tr style="background: #EFEFEF; color: #AEAEAE;">
                             
-                            <td>{{d.product_name}}</td>
+                            <td>{{d.product_desc}}</td>
                             <td>{{d.billable_qty}}</td>
                             <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Quantity" disabled></td>
 
@@ -90,7 +90,7 @@
                         {% else %}
                         <tr>
                             
-                            <td>{{d.product_name}}</td>
+                            <td>{{d.product_desc}}</td>
                             <td>{{d.billable_qty}}</td>
                             <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Enter Quantity" required></td>
 
@@ -160,7 +160,7 @@
                     success: function(response) {
                         if (response.success) {
                             // Handle success response
-                            llocation.href="/vendor-pos/{{data.id}}"
+                            location.href="/vendor-pos/{{data.id}}"
                             console.log('Form submission success');
                         } else {
                             // Handle failure response
@@ -374,5 +374,29 @@
         row.insertBefore(cell, row.firstChild); // Insert the new cell at the beginning of the row
       }
     </script>
-    
+    <script>
+         $(document).ready(function validateDate() {
+            var currentDate = new Date();
+
+            // Get all the date fields in your HTML (assuming they have a common class or other selector)
+            var dateFields = document.getElementsByClassName('date-field');
+
+            // Iterate over each date field and set the minimum value to the current date
+            for (var i = 0; i < dateFields.length; i++) {
+              dateFields[i].max = currentDate.toISOString().split('T')[0];
+            }
+         });
+    </script>
+    <script>
+        function validateDateInput(input, d_id) {
+            var currentDate = new Date();
+
+            // Get all the date fields in your HTML (assuming they have a common class or other selector)
+            var dateInput = document.getElementById('date_delivered').value();
+            if (dateInput > currentDate){
+                document.getElementById("dateHelperText").textContent = 'Date cannot be later than today';
+            }
+            
+         }
+    </script>
 {% endblock %}

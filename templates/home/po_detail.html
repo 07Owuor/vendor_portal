@@ -47,14 +47,15 @@
             </div>
             <div class="col-6">
                  
-                <button type="button" class="btn btn-primary" style="float: right;">
-                    Download <span><i class="fa fa-download" aria-hidden="true"></i></span>
+                <button type="button" class="btn btn-primary" style="float: right;" data-toggle="tooltip" data-placement="top" title="Download PO">
+                    <span><i class="fa fa-download" aria-hidden="true"></i></span>
                 </button>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float: right; margin-right: 5px;">
-                    Add Delivery
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float: right; margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Add Delivery">
+                    <span class="fas fa-truck"></span>
                 </button>
-                <a href="{% url 'post_bill' po_id=data.id %}" class="btn btn-primary" style="float: right; margin-right: 5px;">
-                    Add Vendor Bill
+                <a href="{% url 'post_bill' po_id=data.id %}" class="btn btn-primary" style="float: right; margin-right: 5px;"
+                data-toggle="tooltip" data-placement="top" title="Add Invoice">
+                    <span class="fas fa-file-invoice-dollar"></span>
                 </a>
                 
             </div>
@@ -67,18 +68,17 @@
         <div class="row">
         	<div class="col-6">
         		<p style="color: black;"><strong>Name</strong>: {{data.name}}</p>
-                <p style="color: black;"><strong>Currency Name</strong>: {{data.currency_name}}</p>
-                <p style="color: black;"><strong>Date Approved</strong>: {{data.date_approve}}</p>
-                <p style="color: black;"><strong>Date Planned</strong>: {{data.date_planned}}</p>
-                <p style="color: black;"><strong>Invoice Status</strong>: {{data.invoice_status}}</p>
+                <p style="color: black;"><strong>Planned Delivery Date</strong>: {{data.date_planned}}</p>
+                <p style="color: black;"><strong>Delivery Mode</strong>: {{data.delivery_mode}}</p>
+                <p style="color: black;"><strong>Delivery Location</strong>: {{data.delivery_location_desc}}</p>
                 <p style="color: black;"><strong>Delivery Comments</strong>: </p>{{data.delivery_comments|safe}}
+                
         	</div>
         	<div class="col-6">
-        		<p style="color: black;"><strong>Gross</strong>: {{data.amount_total|intcomma}}</p>
-        		<p style="color: black;"><strong>Net</strong>: {{data.amount_untaxed|intcomma}}</p>
-        		<p style="color: black;"><strong>Tax Amount</strong>: {{data.amount_tax|intcomma}}</p>
-                <p style="color: black;"><strong>Delivery Location</strong>: {{data.delivery_location_desc}}</p>
-                <p style="color: black;"><strong>Delivery Mode</strong>: {{data.delivery_mode}}</p>
+        		<p style="color: black;"><strong>Gross Order Value</strong>: {{data.currency_name}}. {{data.amount_total|intcomma}}</p>
+        		<p style="color: black;"><strong>Net Order Value</strong>: {{data.currency_name}}. {{data.amount_untaxed|intcomma}}</p>
+        		<p style="color: black;"><strong>VAT Amount</strong>: {{data.currency_name}}. {{data.amount_tax|intcomma}}</p>
+                
         	</div>
             <div class="col-12">
                 
@@ -122,7 +122,7 @@
                         <thead>
                             <tr>
                                 
-                                <th>Name</th>
+                                
                                 <th>Product Name</th>
                                 <th>Qty</th>
                                 <th>Price Unit</th>
@@ -137,8 +137,8 @@
                             {% for d in data.order_line %}
                             <tr>
                                 
+                                
                                 <td>{{d.name}}</td>
-                                <td>{{d.product_name}}</td>
                                 <td>{{d.product_qty}}</td>
                                 <td>{{d.price_unit|intcomma}}</td>
                                 <td>{{d.price_subtotal|intcomma}}</td>
@@ -162,54 +162,25 @@
                             <tr>
                                 
                                 <th>Name</th>
-                                <th>Destination Name</th>
-                                <th>Scheduled Date</th>
-                                <th>Deadline Date</th>
-                                <th>GRN Attachement</th>
+                                <th>Delivery Date</th>
+                                <th>Product Name</th>
+                                <th>Quantity Done</th>
+                                <th>Quantity Accepted</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for d in receipts %}
-                            <tr data-toggle="collapse" data-target="#{{d.id}}" class="clickable">
-                                
+                            {% for l in d.receipt_line %}
+                            <tr>
                                 <td>{{d.name}}</td>
-                                <td>{{d.location_dest_name}}</td>
-                                <td>{{d.scheduled_date}}</td>
-                                <td>{{d.date_deadline}}</td>
-                                <td>{{d.grn_srn_attachment}}</td>
-                                <td>
-                                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                        Line Items
-                                    </button>
-                                </td>
+                                <td>{{d.date_done}}</td>
+                                <td>{{l.product_desc}}</td>
+                                <td>{{l.product_uom_qty}}</td>
+                                <td>{{l.quantity_done}}</td>
                             </tr>
-                            <tr class="collapse" id="collapseExample"> 
-                                <td colspan="7">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                
-                                                <th>Name</th>
-                                                <th>Line Name</th>
-                                                <th>Qty</th>
-                                                <th>Qty Done</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for l in d.receipt_line %}
-                                            <tr>
-                                                
-                                                <td>{{l.name}}</td>
-                                                <td>{{l.purchase_line_name}}</td>
-                                                <td>{{l.product_uom_qty}}</td>
-                                                <td>{{l.quantity_done}}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
+                            {% endfor %}
+                            
                             {% endfor %}
                         </tbody>
 
@@ -360,7 +331,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Delivery</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Add Delivery Note</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -369,19 +340,19 @@
            <form method="POST" class="user" id="poForm" enctype="multipart/form-data">  
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="date_delivered" style="color: black;"><strong>Date</strong></label>
-                    <input type="date" class="form-control form-control-user"id="exampleInputEmail" name="date_delivered" id="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
+                    <label for="date_delivered" style="color: black;"><strong>Delivery Date *</strong></label>
+                    <input type="date" class="form-control form-control-user date-field"id="exampleInputEmail" name="date_delivered" id="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
                 </div>
                 {% for d in data.order_line %}
                 <div class="form-group">
-                    <label for="{{d.id}}" style="color: black;"><strong>{{d.product_name}}</strong></label>
+                    <label for="{{d.id}}" style="color: black;"><strong>{{d.name}}</strong></label>
                     <input type="text" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
-                        aria-describedby="emailHelp" placeholder="Enter Quantity in  {{d.product_uom_name}}" required>
+                        aria-describedby="emailHelp" placeholder="Enter Quantity in  {{d.product_uom_name}}">
                 </div>
                 {% endfor %}
 
                 <div class="form-group">
-                    <label for="receipt_attachment" style="color: black;"><strong>Attach Delivery Note</strong></label>
+                    <label for="receipt_attachment" style="color: black;"><strong>Attach Delivery Note *</strong></label>
                     <input type="file" class="form-control"  id="receipt_attachment" name="receipt_attachment" placeholder="Delivery Note Attachement" required> 
                 </div>
                 
@@ -426,10 +397,11 @@
                     success: function(response) {
                         if (response.success) {
                             // Handle success response
-                            reloadPage();
+                             location.href="/vendor-pos/{{data.id}}"
                             console.log('Form submission success');
                         } else {
                             // Handle failure response
+                            reloadPage();
                             console.log('Form submission failed');
                             
                         }
@@ -484,7 +456,31 @@
         row.insertBefore(cell, row.firstChild); // Insert the new cell at the beginning of the row
       }
     </script>
-    
+    <script>
+         $(document).ready(function validateDate() {
+            var currentDate = new Date();
+
+            // Get all the date fields in your HTML (assuming they have a common class or other selector)
+            var dateFields = document.getElementsByClassName('date-field');
+
+            // Iterate over each date field and set the minimum value to the current date
+            for (var i = 0; i < dateFields.length; i++) {
+              dateFields[i].max = currentDate.toISOString().split('T')[0];
+            }
+         });
+    </script>
+    <script>
+        function validateDateInput(input, d_id) {
+            var currentDate = new Date();
+
+            // Get all the date fields in your HTML (assuming they have a common class or other selector)
+            var dateInput = document.getElementById('date_delivered').value();
+            if (dateInput > currentDate){
+                document.getElementById("dateHelperText").textContent = 'Date cannot be later than today';
+            }
+            
+         }
+    </script>
 
 {% endblock %}
 
