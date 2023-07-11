@@ -21,9 +21,10 @@
                         <th>Currency</th>
                         <th>Bank Name</th>
                         <th>Bank Branch Name</th>
-                        <th>Bank Account Name</th>
-                        <th>Bank Account Number</th>
+                        <th>Account Name</th>
+                        <th>Account Number</th>
                         <th>Date </th>
+                        <th></th>
                         
                     </tr>
                 </thead>
@@ -37,6 +38,11 @@
                         <td>{{d.bank_acc_name}}</td>
                         <td>{{d.bank_acc_number}}</td>
                         <td>{{d.date}}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" style="float: right;" data-toggle="tooltip" data-placement="top" title="Download PO">
+                                <span><i class="fa fa-download" aria-hidden="true"></i></span>
+                            </button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

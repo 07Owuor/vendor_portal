@@ -40,17 +40,19 @@
         <form method="POST" class="user" id="billsForm" enctype="multipart/form-data">  
                 {% csrf_token %}
                  <div class="form-group">
-                    <label for="date_delivered" style="color: black;"><strong>Date</strong></label>
+                    <label for="date_delivered" style="color: black;"><strong>Date</strong>
+                     <span data-toggle="tooltip" data-placement="top" title="Tooltip on top"><i class="fas fa-info-circle"></i></span>
+                 </label>
                     <input type="date" class="form-control form-control-user date-field"id="exampleInputEmail" name="date_delivered" id="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
                 </div>
                 <div class="form-group">
-                    <label for="kra_control_invoice_number" style="color: black;"><strong>KRA Control Invoice Number</strong></label>
+                    <label for="kra_control_invoice_number" style="color: black;"><strong>KRA Control Invoice Number</strong> <span><i class="fas fa-info-circle"></i></span></label>
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="kra_control_invoice_number"  id="kra_control_invoice_number"
                     aria-describedby="emailHelp" placeholder="Enter Control Invoice Number" required>
                     <div id="helperText" class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <label for="vendor_invoice_number" style="color: black;"><strong>Invoice Number</strong></label>
+                    <label for="vendor_invoice_number" style="color: black;"><strong>Invoice Number</strong> <span><i class="fas fa-info-circle"></i></span></label>
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="vendor_invoice_number" id="vendor_invoice_number" aria-describedby="emailHelp" placeholder=" Enter Invoice Number" required>
                 </div>
                 

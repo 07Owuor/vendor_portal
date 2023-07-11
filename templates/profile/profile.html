@@ -2,6 +2,12 @@
 {% load static %}
 
 {% block css %}
+<style type="text/css">
+    p {
+        color: black;
+        font-weight: bold;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -30,36 +36,53 @@
             <div class="card-body">
                 <div class="row">
                 	<div class="col-4">
-                		<p class="text-muted mb-1">Company Name :</p>
+                		<strong><p class="text-muted mb-1" style="color: black;">Company Name :</p></strong>
                 		<hr>
-                		<p class="text-muted mb-1">Building :</p>
+                		<strong><p class="text-muted mb-1" style="color: black;">Building :</p></strong>
                 		<hr>
-                		<p class="text-muted mb-1">Road/Street :</p>
+                		<strong><p class="text-muted mb-1" style="color: black;">Road/Street :</p></strong>
                 		<hr>
-                		<p class="text-muted mb-1">City/Town :</p>
+                		<strong><p class="text-muted mb-1" style="color: black;">City/Town :</p></strong>
                 		<hr>
-                		<p class="text-muted mb-1">Country :</p>
+                		<strong><p class="text-muted mb-1" style="color: black;">Country :</p></strong>
                 		<hr>
-                		<p class="text-muted mb-1">Year of operation :</p>
+                		<strong><p class="text-muted mb-1" style="color: black;">Year of operation :</p></strong>
                 		<hr>
-                		<p class="text-muted mb-1">KRA Pin No :</p>
+                		<strong><p class="text-muted mb-1" style="color: black;">KRA Pin No :</p></strong>
+                        <hr>
                 	</div>
                 	<div class="col-8">
                 		<p class="text-muted mb-1">{{data.name}}</p>
                 		<hr>
-                		<p class="text-muted mb-1"></p>
+                		<p class="text-muted mb-1"> - </p>
                 		<hr>
                 		<p class="text-muted mb-1">{{data.street}} {{data.zip}}</p>
                 		<hr>
-                		<p class="text-muted mb-1">{{data.city}}</p>
+                		{% if data.city %}
+                        <p class="text-muted mb-1">{{data.city}}</p>
+                        <hr>
+                        {% else %}
+                        <p class="text-muted mb-1"> - </p>
+                        <hr>
+                        {% endif  %}
+                		{% if data.country %}
+                        <p class="text-muted mb-1">{{data.country}}</p>
+                        <hr>
+                        {% else %}
+                        <p class="text-muted mb-1"> - </p>
+                        <hr>
+                        {% endif  %}
+                		<p class="text-muted mb-1"> - </p>
                 		<hr>
-                		<p class="text-muted mb-1">{{data.country}}</p>
-                		<hr>
-                		<p class="text-muted mb-1"></p>
-                		<hr>
+                        {% if data.vat %}
                 		<p class="text-muted mb-1">{{data.vat}}</p>
-                	</div>
-                </div>
+                        <hr>
+                        {% else %}
+                        <p class="text-muted mb-1"> - </p>
+                        <hr>
+                        {% endif  %}
+                	</div> 
+                </div> 
             </div>
         </div>
     </div>
