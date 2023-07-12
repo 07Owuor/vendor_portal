@@ -21,7 +21,7 @@ def login_user(request):
                 "params": {
                     "login": email_address,
                     "password": password,
-                    "db": "saner-gy-sanergy-dev-2-8736407"
+                    "db": "saner-gy-sanergy-dev-2-8930226"
                 }
             }
             response = requests.get('https://odoo.develop.saner.gy/web/session/authenticate', json=data)

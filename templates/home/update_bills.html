@@ -5,11 +5,12 @@
 {% block css %}
 <!-- Custom styles for this page -->
 <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+
 {% endblock %}
 
 {% block content %}
 <h1 class="h3 mb-2 text-gray-800">Create Invoice</h1>
-{% if messages %}
+<!-- {% if messages %}
 <div class="row">
     {% for message in messages %}
     <div class="col-xl-12 col-md-12 mb-4 col-sm-12">
@@ -33,7 +34,7 @@
     </div>
     {% endfor %}
 </div>
-{% endif %}
+{% endif %} -->
 <div class="card shadow mb-4">
     <div class="card-body">
 
@@ -49,7 +50,7 @@
                     <label for="kra_control_invoice_number" style="color: black;"><strong>KRA Control Invoice Number</strong> <span><i class="fas fa-info-circle"></i></span></label>
                     <input type="text" class="form-control form-control-user"id="exampleInputEmail" name="kra_control_invoice_number"  id="kra_control_invoice_number"
                     aria-describedby="emailHelp" placeholder="Enter Control Invoice Number" required>
-                    <div id="helperText" class="error-message"></div>
+                   
                 </div>
                 <div class="form-group">
                     <label for="vendor_invoice_number" style="color: black;"><strong>Invoice Number</strong> <span><i class="fas fa-info-circle"></i></span></label>
@@ -130,6 +131,41 @@
             </form>
     </div>
 </div>
+
+{% endblock %}
+
+{% block modal %}
+<!-- Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">KRA Confirmation Failed</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           {% for message in messages %}
+           <div class="h4 font-weight-bold text-danger  mb-1">
+                {{ message }}
+            </div>
+           {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          
+          <div class="modal-body" style="background: rgba(0,0,0); height: 250px; width: auto;">
+           <img src="{% static 'img/loading.gif' %}" style="height: 100%; width: 100%;">
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
 
 {% block script %}
@@ -143,13 +179,16 @@
      function reloadPage()
      {
        window.location.reload()
+       window.onload = function() {
+        $('#errorModal').modal('show');
+       }
      }
     </script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('#billsForm').submit(function(event) {
                 event.preventDefault(); // Prevent the default form submission
-
+                $('#progressModal').modal('show');
                 var formData = $(this).serialize(); // Serialize the form data
                 $.ajax({
                     type: 'POST',
@@ -164,10 +203,12 @@
                             // Handle success response
                             location.href="/vendor-pos/{{data.id}}"
                             console.log('Form submission success');
+                            console.log(response)
                         } else {
                             // Handle failure response
                             console.log('Form submission failed');
                             reloadPage();
+                            console.log(response);
                             
                         }
                     },
@@ -179,35 +220,7 @@
             });
         });
     </script>
-    <script>
-        function validateInput(input) {
-          var value = parseInt(input.value);
-          
-          $.ajax(
-          	{
-                type: 'GET',
-                url: "{% url 'confirm_kra' %}", // Replace with your Django endpoint URL
-                data: {invoice_number: value},
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Handle success response
-                        console.log('KRA submission success');
-                    } else {
-                        // Handle failure response
-                        document.getElementById("helperText").textContent = 'Invalid KRA invoice number ';
-                        
-                    }
-                },
-                error: function(xhr, errmsg, err) {
-                    // Handle error
-                    console.log('AJAX request failed'+err+errmsg);
-                }
-         	});
-        }
-    </script>
+    
     <script type="text/javascript">
 
         function calcGross(d_id) {

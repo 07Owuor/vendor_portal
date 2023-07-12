@@ -15,5 +15,5 @@ urlpatterns = [
     path('vendor-rfq-detail/<str:rfq_name>', views.rfq_detail, name='rfq_detail'),
     path('post-rfq/<str:rfq_name>', views.post_rfq, name='post_rfq'),
     path('vendor-profile', views.vendor_details, name='vendor_details'),
-    path('confirm-kra', views.confirm_kra, name='confirm_kra'),
+    # path('confirm-kra', views.confirm_kra, name='confirm_kra'),
 ]
