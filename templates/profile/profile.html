@@ -85,7 +85,7 @@
                 </div> 
             </div>
             <div class="card-footer">
-                <button class="btn btn-primary" style="float: right;">Edit Supplier Information</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#supplierModal" data-toggle="tooltip" data-placement="top" title="Edit Supplier Information"style="float: right;">Edit Supplier Information</button>
             </div>
         </div>
     </div>
@@ -214,37 +214,45 @@
 
 {% block modal %}
 <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Delivery Note</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Edit Supplier Information</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-           <form method="POST" class="user" id="poForm" enctype="multipart/form-data">  
+           <form method="POST" class="user" id="supplierForm" enctype="multipart/form-data">  
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="date_delivered" style="color: black;"><strong>Delivery Date *</strong></label>
-                    <input type="date" class="form-control form-control-user date-field"id="exampleInputEmail" name="date_delivered" id="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
+                    {{form.company_name}}
                 </div>
-                {% for d in data.order_line %}
                 <div class="form-group">
-                    <label for="{{d.id}}" style="color: black;"><strong>{{d.name}}</strong></label>
-                    <input type="text" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
-                        aria-describedby="emailHelp" placeholder="Enter Quantity in  {{d.product_uom_name}}">
+                    {{form.building}}
                 </div>
-                {% endfor %}
-
                 <div class="form-group">
-                    <label for="receipt_attachment" style="color: black;"><strong>Attach Delivery Note *</strong></label>
-                    <input type="file" class="form-control"  id="receipt_attachment" name="receipt_attachment" placeholder="Delivery Note Attachement" required> 
+                    {{form.road}}
                 </div>
-                
+                <div class="form-group">
+                    {{form.street}}
+                </div>
+                <div class="form-group">
+                    {{form.city}}
+                </div>
+                <div class="form-group">
+                    {{form.country}}
+                </div>
+                <div class="form-group">
+                    {{form.years_of_operations}}
+                </div>
+                <div class="form-group">
+                    {{form.kra_pin}}
+                </div>
+                 
                 <div class="clearfix"></div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Submit</button>
             </form>
           </div>
         </div>

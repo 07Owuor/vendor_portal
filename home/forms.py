@@ -6,17 +6,36 @@ class DateInput(forms.DateInput):
     format = ["%Y-%m-%d"]
 
 
-class CompanyDetailForm(forms.Form):
-    order_line = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple())
-    receipt_date = forms.DateField(widget=DateInput(attrs={
+class SupplierDetailForm(forms.Form):
+    company_name = forms.CharField(widget=forms.TextInput(attrs={
         "class": "form-control form-control-user",
-        "placeholder": "Enter date delivered"
+        "placeholder": "Enter Company Name"
     }))
-    line_id = forms.CharField(widget=forms.TextInput(attrs={
+    building = forms.CharField(widget=forms.TextInput(attrs={
         "class": "form-control form-control-user",
-        "placeholder": "Enter line id"
+        "placeholder": "Enter Building Name"
     }))
-    quantity_received = forms.CharField(widget=forms.TextInput(attrs={
+    road = forms.CharField(widget=forms.TextInput(attrs={
         "class": "form-control form-control-user",
-        "placeholder": "Enter quantity received"
+        "placeholder": "Enter Road Name"
+    }))
+    street = forms.CharField(widget=forms.TextInput(attrs={
+        "class": "form-control form-control-user",
+        "placeholder": "Enter Street Name"
+    }))
+    city = forms.CharField(widget=forms.TextInput(attrs={
+        "class": "form-control form-control-user",
+        "placeholder": "Enter City/Town Name"
+    }))
+    country = forms.CharField(widget=forms.TextInput(attrs={
+        "class": "form-control form-control-user",
+        "placeholder": "Enter Country Name"
+    }))
+    years_of_operations = forms.CharField(widget=forms.TextInput(attrs={
+        "class": "form-control form-control-user",
+        "placeholder": "Enter Years of Operation"
+    }))
+    kra_pin = forms.CharField(widget=forms.TextInput(attrs={
+        "class": "form-control form-control-user",
+        "placeholder": "Enter KRA Pin Number"
     }))

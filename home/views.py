@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from asgiref.sync import async_to_sync, sync_to_async
 from django.views.decorators.csrf import csrf_exempt
+from .forms import SupplierDetailForm
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.contrib import messages
@@ -40,6 +41,7 @@ def home_index(request):
             headers=headers
         )
         po_data = po_response.json()
+
 
         po_count = len(po_data["data"])
 
@@ -186,7 +188,7 @@ def post_po_receipt(request, po_id):
                 "data": None,
                 "vals": vals
             }
-            print(payload)
+
             post_response = requests.post(
                 'https://odoo.develop.saner.gy/purchase_custom/create_delivery_receipt',
                 json=payload,
@@ -239,6 +241,7 @@ def post_vendor_bill(request, po_id):
     if 'partner_id' in request.session:
         partner_id = request.session['partner_id']
         session_id = request.session['session_id']
+        company_id = request.session['company_id']
         headers = {
             'Cookie': session_id
         }
@@ -271,10 +274,21 @@ def post_vendor_bill(request, po_id):
                     bills_received["date_planned"] = date_delivered
                     vat = request.POST.get(f"vat_{line_id}")
                     if vat:
-                        bills_received["tax_ids"] = [2]
+                        tax_id = ""
+                        if company_id == 1:
+                            if vat == 0.08:
+                                tax_id = 9
+                            elif vat == 0.16:
+                                tax_id = 2
+                        elif company_id == 2:
+                            if vat == 0.16:
+                                tax_id = 4
+                        else:
+                            tax_id = ""
+                        bills_received["tax_ids"] = [tax_id]
                     vals.append(bills_received)
 
-            print(f"Invoice Number {request.POST.get('kra_control_invoice_number')}")
+
 
             payload = {
                 "partner_id": partner_id,
@@ -284,7 +298,7 @@ def post_vendor_bill(request, po_id):
                 "vendor_invoice_number": str(request.POST.get('vendor_invoice_number')),
                 "line_ids": vals
             }
-            print(payload)
+           
             post_response = requests.post(
                 'https://odoo.develop.saner.gy/purchase_custom/create_vendor_bill',
                 json=payload,
@@ -453,6 +467,7 @@ def post_rfq(request, rfq_name):
     if 'partner_id' in request.session:
         partner_id = request.session['partner_id']
         session_id = request.session['session_id']
+        company_id = request.session['company_id']
         headers = {
             'Cookie': session_id
         }
@@ -483,8 +498,21 @@ def post_rfq(request, rfq_name):
                     rfq_received["ctt_price_unit"] = str(line_price)
                     rfq_received["ctt_schedule_date"] = date_delivered
                     vat = request.POST.get(f"vat_{line_id}")
+
                     if vat:
-                        rfq_received["taxes_id"] = [2]
+                        tax_id = ""
+                        if company_id == 1:
+                            if vat == 0.08:
+                                tax_id = 9
+                            elif vat == 0.16:
+                                tax_id = 2
+                        elif company_id == 2:
+                            if vat == 0.16:
+                                tax_id = 4
+                        else:
+                            tax_id = ""
+
+                        rfq_received["taxes_id"] = [tax_id]
                     vals.append(rfq_received)
 
             payload = {
@@ -536,9 +564,15 @@ def vendor_details(request):
         )
         prof_data = prof_response.json()
 
+        if request.method == 'POST':
+            form = SupplierDetailForm(request.POST or None)
+        else:
+            form = SupplierDetailForm()
+
         data = {
             "data": prof_data["data"],
             "bank": prof_data["data"]["bank_details"],
+            "form": form
         }
         return render(request, template_name, data)
     else:

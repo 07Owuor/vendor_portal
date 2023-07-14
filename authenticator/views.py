@@ -43,9 +43,10 @@ def login_user(request):
                     partner_id = user_data['partner_id']
                     user_name = user_data['partner_display_name']
                     company_id = user_data['company_id']
+
                     if int(company_id) == 1:
                         company = "Regen Organics"
-                    elif int(company_id) == 1:
+                    elif int(company_id) == 2:
                         company = "Fresh Life LTD"
                     else:
                         company = "Sanergy Collaborative"
@@ -56,6 +57,7 @@ def login_user(request):
                     request.session['partner_id'] = partner_id
                     request.session['user_name'] = user_name
                     request.session['company'] = company
+                    request.session['company_id'] = company_id
                     header = str(response.headers['Set-Cookie']).split(';')
                     print(header)
                     request.session['session_id'] = header[0]

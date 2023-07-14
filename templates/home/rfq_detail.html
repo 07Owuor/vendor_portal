@@ -107,14 +107,13 @@
                                 <tr>
                                     
                                     <th>Name</th>
-                                    <th>Date</th>
+                                    
                                     <th>Required Quantity</th>
                                     <th>UoM</th>
                                     <th>Delivery Date</th>
                                     <th>Quantity</th>
                                     <th>Unit Price</th>
                                     <th>VAT</th>
-                                    <th>Tax 2</th>
                                     <th>Net</th>
                                     <th>Tax</th>
                                     <th>Gross</th>
@@ -127,7 +126,7 @@
                                 <tr>
                                     
                                     <td>{{d.product_desc}}</td>
-                                    <td>{{d.schedule_date}}</td>
+                                    
                                     <td>{{d.product_qty}}</td>
                                     <td>{{d.product_uom_name}}</td>
                                     <td>
@@ -137,12 +136,22 @@
                                     <td><input type="number" class="form-control form-control-user" name="quantity_{{d.id}}" id="quantity_{{d.id}}" min="1" placeholder="Enter Quantity" required></td>
 
                                     <td><input type="number" class="form-control form-control-user" name="price_{{d.id}}" id="price_{{d.id}}"  min="1" step=".01" placeholder="Enter Unit Price" required oninput="calcNet({{d.id}});"></td>
-                                    <td><center><input type="checkbox" name="vat_{{d.id}}" id="vat_{{d.id}}" value="vat"></center></td>
-                                    <td><select name="vat_{{d.id}}" id="vat_{{d.id}}">
-                                        <option name="0" id="vat_0">--</option>
-                                        <option name="2" id="vat_16">16%</option>
-                                        <option name="9" id="vat_8">8%</option>
-                                    </select></td>
+                                    {% if request.session.company_id == 1 %}
+                                    <td>
+                                        <select name="vat_{{d.id}}" id="vat_{{d.id}}" onchange="calcGross({{d.id}})" required>
+                                            <option name="0" id="vat_0" value="0">--</option>
+                                            <option name="9" id="vat_8" value="0.08">8%</option>
+                                            <option name="2" id="vat_16" value="0.16">16%</option>
+                                        </select>
+                                    </td>
+                                    {% else %}
+                                    <td>
+                                        <select name="vat_{{d.id}}" id="vat_{{d.id}}" onchange="calcGross({{d.id}})" required>
+                                            <option name="0" id="vat_0" value="0">--</option>
+                                            <option name="4" id="vat_16" value="0.16">16%</option>
+                                        </select>
+                                    </td>
+                                    {% endif %}
                                     <td><p id="net_{{d.id}}"></p></td>
                                     <td><p id="tax_{{d.id}}"></p></td>
                                     <td><p id="gross_{{d.id}}"></p></td>
@@ -152,7 +161,7 @@
                             <tfoot>
                                 <tr>
                                     <td></td>
-                                    <td></td>
+                                    
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -238,24 +247,23 @@
     </script>
     <script type="text/javascript">
 
-        function calcGross(d_id, tax_value) {
+        function calcGross(d_id) {
             event.preventDefault();
             console.log("Calc Gross");
             vat = document.getElementById("vat_"+d_id);
+            
             net_value = document.getElementById("net_"+d_id).innerHTML;
-            console.log("net_"+d_id);
+            console.log("Net ID net_"+d_id);
             
             console.log("Net >"+net_value);
             if (net_value == null || net_value == "") {
                 console.log("No Net Value");
             }
             else {
-                dropDown.addEventListener('change', (event) => {
-                const selectedLanguage = event.target.value;
-                textBox.value = selectedLanguage;});
+                var selectedOption = parseFloat(vat.options[vat.selectedIndex].value);
                 
-                if (vat.checked){
-                    tax = parseInt(net_value) * 0.16;
+                if (selectedOption > 0){
+                    tax = parseInt(net_value) * selectedOption;
                     gross = parseInt(net_value) + tax
                     document.getElementById("gross_"+d_id).textContent =  gross;
                     document.getElementById("tax_"+d_id).textContent =  tax;
