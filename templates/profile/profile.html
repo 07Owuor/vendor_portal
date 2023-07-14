@@ -12,9 +12,9 @@
 
 {% block content %}
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    <h1 class="h3 mb-0 text-gray-800">Vendor Profile</h1>
 
-    <button class="btn btn-primary" style="float: right;">Edit Profile</button>
+    
 </div>
 
 <div class="row">
@@ -84,6 +84,9 @@
                 	</div> 
                 </div> 
             </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" style="float: right;">Edit Supplier Information</button>
+            </div>
         </div>
     </div>
     <div class="col-xl-12 col-md-12 mb-4 col-sm-12">
@@ -119,6 +122,9 @@
                 		
                 	</div>
                 </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" style="float: right;">Edit Contact Information</button>
             </div>
         </div>
     </div>
@@ -160,10 +166,90 @@
                     </div>
                 </div>
             </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" style="float: right;">Edit Account Information</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12 col-md-12 mb-4 col-sm-12">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-header">
+                <h5>Company Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <p class="text-muted mb-1">Director Name: {{data.company_details}}</p>
+                        <hr>
+                        <p class="text-muted mb-1">Director Identification: {{data.director_id}}</p>
+                        <hr>
+                        <p class="text-muted mb-1">Company CR12: {{data.cr12_bn3}}</p>
+                        <hr>
+                        <p class="text-muted mb-1">Industry: {{data.company_details}}</p>
+                        <hr>
+                    </div>
+                    <div class="col-6">
+                        <p class="text-muted mb-1">Incorporation Certificate: {{data.incorporation_cert}}</p>
+                        <hr>
+                        <p class="text-muted mb-1">Business Permit: {{data.business_permit}}</p>
+                        <hr>
+                        <p class="text-muted mb-1">KRA Certficate: {{data.kra_certificate}}</p>
+                        <hr>
+                        <p class="text-muted mb-1">Tax Compliance: {{data.tax_compliance}}</p>
+                        <hr>
+                        
+                    </div>
+                    <div class="col-12">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" style="float: right;">Edit Company Information</button>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
 
+{% block modal %}
+<!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Delivery Note</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form method="POST" class="user" id="poForm" enctype="multipart/form-data">  
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="date_delivered" style="color: black;"><strong>Delivery Date *</strong></label>
+                    <input type="date" class="form-control form-control-user date-field"id="exampleInputEmail" name="date_delivered" id="date_delivered" aria-describedby="emailHelp" placeholder="Enter Date Delivered" required>
+                </div>
+                {% for d in data.order_line %}
+                <div class="form-group">
+                    <label for="{{d.id}}" style="color: black;"><strong>{{d.name}}</strong></label>
+                    <input type="text" class="form-control form-control-user" name="{{d.id}}" id="exampleInputEmail" 
+                        aria-describedby="emailHelp" placeholder="Enter Quantity in  {{d.product_uom_name}}">
+                </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    <label for="receipt_attachment" style="color: black;"><strong>Attach Delivery Note *</strong></label>
+                    <input type="file" class="form-control"  id="receipt_attachment" name="receipt_attachment" placeholder="Delivery Note Attachement" required> 
+                </div>
+                
+                <div class="clearfix"></div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
 {% block script %}
 {% endblock %}

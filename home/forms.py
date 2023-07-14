@@ -6,7 +6,7 @@ class DateInput(forms.DateInput):
     format = ["%Y-%m-%d"]
 
 
-class PurchaseOrderForm(forms.Form):
+class CompanyDetailForm(forms.Form):
     order_line = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple())
     receipt_date = forms.DateField(widget=DateInput(attrs={
         "class": "form-control form-control-user",
