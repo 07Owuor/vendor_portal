@@ -22,16 +22,16 @@ token_generator = default_token_generator
 
 class CustomAccountManager(BaseUserManager):
 
-    def create_user(self, email, password):
-        user = self.model(email=email, password=password)
+    def create_user(self, email, phone_number, password):
+        user = self.model(email=email, phone_number=phone_number, password=password)
         user.set_password(password)
         user.is_staff = False
         user.is_superuser = False
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
-        user = self.create_user(email=email, password=password)
+    def create_superuser(self, email, phone_number, password):
+        user = self.create_user(email=email, phone_number=phone_number, password=password)
         user.is_active = True
         user.is_staff = True
         user.is_superuser = True

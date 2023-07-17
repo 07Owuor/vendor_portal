@@ -36,10 +36,10 @@ def login_user(request):
 
                     # Check if the user already exists in your Django database
                     try:
-                        user = CustomUser.objects.get(email=email_address)
+                        user = User.objects.get(email=email_address)
                     except User.DoesNotExist:
                         # Create a new user if not found
-                        user = CustomUser.objects.create_user(
+                        user = User.objects.create_user(
                             email=email_address,
                             phone_number=email_address,
                             password=password
