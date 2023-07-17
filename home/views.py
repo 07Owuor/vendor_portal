@@ -298,7 +298,7 @@ def post_vendor_bill(request, po_id):
                 "vendor_invoice_number": str(request.POST.get('vendor_invoice_number')),
                 "line_ids": vals
             }
-           
+
             post_response = requests.post(
                 'https://odoo.develop.saner.gy/purchase_custom/create_vendor_bill',
                 json=payload,
@@ -500,19 +500,23 @@ def post_rfq(request, rfq_name):
                     vat = request.POST.get(f"vat_{line_id}")
 
                     if vat:
-                        tax_id = ""
+                        print(vat)
+                        print(company_id)
                         if company_id == 1:
                             if vat == 0.08:
                                 tax_id = 9
+                                rfq_received["taxes_id"] = [tax_id]
                             elif vat == 0.16:
                                 tax_id = 2
+                                rfq_received["taxes_id"] = [tax_id]
                         elif company_id == 2:
                             if vat == 0.16:
                                 tax_id = 4
+                                rfq_received["taxes_id"] = [tax_id]
                         else:
-                            tax_id = ""
+                            tax_id = 2
+                            rfq_received["taxes_id"] = [tax_id]
 
-                        rfq_received["taxes_id"] = [tax_id]
                     vals.append(rfq_received)
 
             payload = {
