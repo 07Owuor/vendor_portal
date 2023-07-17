@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, get_user_model
 from django.shortcuts import render, redirect
+from .models import CustomUser
 from .forms import LoginForm
 import requests
 
@@ -35,13 +36,14 @@ def login_user(request):
 
                     # Check if the user already exists in your Django database
                     try:
-                        user = User.objects.get(email=email_address)
+                        user = CustomUser.objects.get(email=email_address)
                     except User.DoesNotExist:
                         # Create a new user if not found
-                        user = User.objects.create_user(
+                        user = CustomUser.objects.create_user(
                             email=email_address,
                             phone_number=email_address,
-                            password=password)
+                            password=password
+                        )
 
                     # Retrieve the access token from the API response
                     partner_id = user_data['partner_id']
