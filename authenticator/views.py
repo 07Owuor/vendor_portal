@@ -31,13 +31,17 @@ def login_user(request):
                     user_response = response.json()
 
                     user_data = user_response['result']
+                    print(user_data)
 
                     # Check if the user already exists in your Django database
                     try:
                         user = User.objects.get(email=email_address)
                     except User.DoesNotExist:
                         # Create a new user if not found
-                        user = User.objects.create_user(email=email_address, password=password)
+                        user = User.objects.create_user(
+                            email=email_address,
+                            phone_number=email_address,
+                            password=password)
 
                     # Retrieve the access token from the API response
                     partner_id = user_data['partner_id']
