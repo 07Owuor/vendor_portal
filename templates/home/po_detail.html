@@ -67,7 +67,7 @@
     <div class="card-body">
         <div class="row">
         	<div class="col-6">
-        		<p style="color: black;"><strong>Name</strong>: {{data.name}}</p>
+        		<p style="color: black;"><strong>Status</strong>: {{data.po_status}}</p>
                 <p style="color: black;"><strong>Planned Delivery Date</strong>: {{data.date_planned}}</p>
                 <p style="color: black;"><strong>Delivery Mode</strong>: {{data.delivery_mode}}</p>
                 <p style="color: black;"><strong>Delivery Location</strong>: {{data.delivery_location_desc}}</p>
@@ -388,8 +388,6 @@
                     type: 'POST',
                     url: "{% url 'post_receipt' po_id=data.id %}", // Replace with your Django endpoint URL
                     data: formData,
-                    processData: false,
-                    contentType: false,
                     mimeType: "multipart/form-data",
                     headers: {
                         "X-Requested-With": "XMLHttpRequest",
