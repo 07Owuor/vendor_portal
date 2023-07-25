@@ -37,7 +37,7 @@
 {% endif %} -->
 <div class="card shadow mb-4">
     <div class="card-body">
-
+        <h6>You can only bill against quantities received and accepted</h6>
         <form method="POST" class="user" id="billsForm" enctype="multipart/form-data">  
                 {% csrf_token %}
                  <div class="form-group">
@@ -395,30 +395,9 @@
               }
             }
             
-
             console.log("Sum of 'Net' column values:", sum);
 
-            
-
         }
-    </script>
-    <script>
-      var table = document.getElementById("dataTable");
-      var tBody = table.querySelector("tbody")
-      headerRows = table.querySelectorAll("tr")
-      var rows = tBody.querySelectorAll("tr");
-      var hCell = document.createElement("th");
-        var hRow = headerRows[0];
-        hCell.textContent = "#"
-        hRow.insertBefore(hCell, hRow.firstChild);
-
-
-      for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        var cell = document.createElement("td");
-        cell.textContent = i + 1; // Set the row number as the cell content
-        row.insertBefore(cell, row.firstChild); // Insert the new cell at the beginning of the row
-      }
     </script>
     <script>
          $(document).ready(function validateDate() {

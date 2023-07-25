@@ -11,7 +11,7 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">RFQ DataTable</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Request for Quotations</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -20,7 +20,7 @@
                     <tr>
                         <th>Name</th>
                         <th>State</th>
-                        <th>Currency Name</th>
+                        <th>Currency</th>
                         <th>Scheduled Date</th>
                         <th>RFQ Submitted</th>
                     </tr>
@@ -54,22 +54,4 @@
 
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
-    <script>
-      var table = document.getElementById("dataTable");
-      var tBody = table.querySelector("tbody")
-      headerRows = table.querySelectorAll("tr")
-      var rows = tBody.querySelectorAll("tr");
-      var hCell = document.createElement("th");
-        var hRow = headerRows[0];
-        hCell.textContent = "#"
-        hRow.insertBefore(hCell, hRow.firstChild);
-
-
-      for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        var cell = document.createElement("td");
-        cell.textContent = i + 1; // Set the row number as the cell content
-        row.insertBefore(cell, row.firstChild); // Insert the new cell at the beginning of the row
-      }
-    </script>
 {% endblock %}

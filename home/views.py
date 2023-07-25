@@ -1,8 +1,8 @@
+from .forms import SupplierDetailForm, AccountInformationForm, CompanyInformationForm, ContactDetailsForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from asgiref.sync import async_to_sync, sync_to_async
 from django.views.decorators.csrf import csrf_exempt
-from .forms import SupplierDetailForm
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.contrib import messages
@@ -15,9 +15,6 @@ import json
 import os
 import io
 # Create your views here.
-
-
-
 
 
 s3 = boto3.client(
@@ -159,7 +156,6 @@ def post_po_receipt(request, po_id):
         if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
             vals = []
             date_delivered = str(request.POST.get('date_delivered'))
-            print(date_delivered)
             receipt_attachment = request.FILES.get('receipt_attachment')
             print("Name >>", receipt_attachment)
             if receipt_attachment:
@@ -190,7 +186,6 @@ def post_po_receipt(request, po_id):
                 "vals": vals
             }
 
-            print(payload)
 
             post_response = requests.post(
                 'https://odoo.develop.saner.gy/purchase_custom/create_delivery_receipt',
@@ -278,9 +273,6 @@ def post_vendor_bill(request, po_id):
                     bills_received["date_planned"] = date_delivered
                     vat = request.POST.get(f"vat_{line_id}")
                     if vat:
-                        print("VAT", vat)
-                        print("Company ID", company_id)
-                        tax_id = ""
                         if company_id == 1:
                             if str(vat) == "0.08":
                                 tax_id = 9
@@ -297,8 +289,6 @@ def post_vendor_bill(request, po_id):
 
                     vals.append(bills_received)
 
-
-
             payload = {
                 "partner_id": partner_id,
                 "purchase_order_id": int(po_id),
@@ -307,8 +297,6 @@ def post_vendor_bill(request, po_id):
                 "vendor_invoice_number": str(request.POST.get('vendor_invoice_number')),
                 "line_ids": vals
             }
-
-            print("Payload >", payload)
 
             post_response = requests.post(
                 'https://odoo.develop.saner.gy/purchase_custom/create_vendor_bill',
@@ -390,7 +378,6 @@ def vendor_payments(request):
             headers=headers
         )
         payment_data = payment_response.json()
-        print("Payment Data >", payment_data)
         data = {
             "data": payment_data["data"]
         }
@@ -414,7 +401,6 @@ def vendor_rfq(request):
             headers=headers
         )
         rfq_data = rfq_response.json()
-        print(rfq_data)
 
         data = {
             "rfq_data": rfq_data["data"]
@@ -540,14 +526,12 @@ def post_rfq(request, rfq_name):
                 "data": payload_array
             }
 
-            print(payload_data)
             post_response = requests.post(
                 'https://odoo.develop.saner.gy/purchase_custom/create_rfq',
                 json=payload_data,
                 headers=headers
             )
             post_json = post_response.json()
-            print(post_json)
             post_message = post_json["message"]
             if post_message != "success":
                 messages.error(request, str(post_message))
@@ -561,6 +545,25 @@ def post_rfq(request, rfq_name):
         return JsonResponse({'success': False})
     else:
         return redirect('login')
+
+
+async def confirm_kra(request, invoice_number):
+    session_id = request.session['session_id']
+    headers = {
+        'Cookie': session_id
+    }
+    url = "https://odoo.develop.saner.gy/purchase_custom/validate_kra_vendor_invoice?kra_control_invoice_number={}" \
+        .format(str(invoice_number))
+    response = requests.get(url, headers=headers)
+    response_json = response.json()
+    if "message" in response_json:
+        kra_message = response_json["message"]
+        if kra_message != "Success":
+            return JsonResponse({'success': False, 'data': kra_message})
+        else:
+            return JsonResponse({'success': True, 'data': kra_message})
+
+    return JsonResponse({'success': False, 'data': "An Error Occurred"})
 
 
 def vendor_details(request):
@@ -578,36 +581,118 @@ def vendor_details(request):
         prof_data = prof_response.json()
 
         if request.method == 'POST':
-            form = SupplierDetailForm(request.POST or None)
+            supplier_form = SupplierDetailForm(request.POST or None)
+            contact_form = ContactDetailsForm(request.POST or None)
+            account_form = AccountInformationForm(request.POST or None)
+            company_form = CompanyInformationForm(request.POST or None)
+            if supplier_form.is_valid():
+                supplier_data = supplier_form.cleaned_data
+                payload = {
+                    "partner_id": partner_id,
+                    "title": "Supplier Information",
+                    "payload": supplier_data
+                }
+
+                post_response = requests.post(
+                    'https://odoo.develop.saner.gy/vendor-account/change-vendor-details',
+                    json=payload,
+                    headers=headers
+                )
+
+                post_json = post_response.json()
+                if "success" in post_json:
+                    post_result = post_json["success"]
+                    if post_result:
+                        messages.success(request, "Change Request Successfully Sent")
+                    else:
+                        messages.error(request, "Change Request Failed")
+                else:
+                    messages.error(request, "An error occurred while making the request")
+
+            elif contact_form.is_valid():
+                contact_data = contact_form.cleaned_data
+                payload = {
+                    "partner_id": partner_id,
+                    "title": "Contact Information",
+                    "payload": contact_data
+                }
+                post_response = requests.post(
+                    'https://odoo.develop.saner.gy/vendor-account/change-vendor-details',
+                    json=payload,
+                    headers=headers
+                )
+
+                post_json = post_response.json()
+                if "success" in post_json:
+                    post_result = post_json["success"]
+                    if post_result:
+                        messages.success(request, "Change Request Successfully Sent")
+                    else:
+                        messages.error(request, "Change Request Failed")
+                else:
+                    messages.error(request, "An error occurred while making the request")
+
+            elif account_form.is_valid():
+                account_data = account_form.cleaned_data
+                payload = {
+                    "partner_id": partner_id,
+                    "title": "Account Information",
+                    "payload": account_data
+                }
+
+                post_response = requests.post(
+                    'https://odoo.develop.saner.gy/vendor-account/change-vendor-details',
+                    json=payload,
+                    headers=headers
+                )
+
+                post_json = post_response.json()
+                if "success" in post_json:
+                    post_result = post_json["success"]
+                    if post_result:
+                        messages.success(request, "Change Request Successfully Sent")
+                    else:
+                        messages.error(request, "Change Request Failed")
+                else:
+                    messages.error(request, "An error occurred while making the request")
+            elif company_form.is_valid():
+                company_data = company_form.cleaned_data
+                payload = {
+                    "partner_id": partner_id,
+                    "title": "Company Information",
+                    "payload": company_data
+                }
+
+                post_response = requests.post(
+                    'https://odoo.develop.saner.gy/vendor-account/change-vendor-details',
+                    json=payload,
+                    headers=headers
+                )
+
+                post_json = post_response.json()
+                if "success" in post_json:
+                    post_result = post_json["success"]
+                    if post_result:
+                        messages.success(request, "Change Request Successfully Submitted")
+                    else:
+                        messages.error(request, "Change Request Failed")
+                else:
+                    messages.error(request, "An error occurred while making the request")
+
         else:
-            form = SupplierDetailForm()
+            supplier_form = SupplierDetailForm()
+            contact_form = ContactDetailsForm()
+            account_form = AccountInformationForm()
+            company_form = CompanyInformationForm()
 
         data = {
             "data": prof_data["data"],
             "bank": prof_data["data"]["bank_details"],
-            "form": form
+            "supplier_form": supplier_form,
+            "contact_form": contact_form,
+            "account_form": account_form,
+            "company_form": company_form,
         }
         return render(request, template_name, data)
     else:
         return redirect('login')
-
-
-async def confirm_kra(request, invoice_number):
-    session_id = request.session['session_id']
-    headers = {
-        'Cookie': session_id
-    }
-    url = "https://odoo.develop.saner.gy/purchase_custom/validate_kra_vendor_invoice?kra_control_invoice_number={}" \
-        .format(str(invoice_number))
-    response = requests.get(url, headers=headers)
-    response_json = response.json()
-    print(response_json)
-    if "message" in response_json:
-        kra_message = response_json["message"]
-        if kra_message != "Success":
-            return JsonResponse({'success': False, 'data': kra_message})
-        else:
-            return JsonResponse({'success': True, 'data': kra_message})
-
-    return JsonResponse({'success': False, 'data': "An Error Occurred"})
-

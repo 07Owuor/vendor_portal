@@ -19,6 +19,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Currency</th>
                         <th>Gross</th>
                         <th>Net</th>
                         <th>Tax</th>
@@ -32,6 +33,7 @@
                     {% if a.order_type == "PO" %}
                     <tr>
                         <td><a href="{% url 'vendor_po_details' po_id=a.id %}">{{a.name}}</a></td>
+                        <td>{{a.currency_name}}</td>
                         <td>{{a.amount_total|intcomma}}</td>
                         <td>{{a.amount_untaxed|intcomma}}</td>
                         <td>{{a.amount_tax|intcomma}}</td>
@@ -56,22 +58,4 @@
 
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
-    <script>
-      var table = document.getElementById("dataTable");
-      var tBody = table.querySelector("tbody")
-      headerRows = table.querySelectorAll("tr")
-      var rows = tBody.querySelectorAll("tr");
-      var hCell = document.createElement("th");
-        var hRow = headerRows[0];
-        hCell.textContent = "#"
-        hRow.insertBefore(hCell, hRow.firstChild);
-
-
-      for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        var cell = document.createElement("td");
-        cell.textContent = i + 1; // Set the row number as the cell content
-        row.insertBefore(cell, row.firstChild); // Insert the new cell at the beginning of the row
-      }
-    </script>
 {% endblock %}

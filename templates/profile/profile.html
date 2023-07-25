@@ -124,7 +124,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn btn-primary" style="float: right;">Edit Contact Information</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#contactModal" data-toggle="tooltip" data-placement="top" title="Edit Contact Information" style="float: right;">Edit Contact Information</button>
             </div>
         </div>
     </div>
@@ -159,7 +159,7 @@
                         <hr>
                         <p class="text-muted mb-1">MPesa Till: </p>
                         <hr>
-                        <p class="text-muted mb-1">Paybiil option Acc No.: </p>
+                        <p class="text-muted mb-1">Paybill option Acc No.: </p>
                     </div>
                     <div class="col-12">
                         
@@ -167,7 +167,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn btn-primary" style="float: right;">Edit Account Information</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#accountModal" data-toggle="tooltip" data-placement="top" title="Edit Account Information" style="float: right;">Edit Account Information</button>
             </div>
         </div>
     </div>
@@ -205,7 +205,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn btn-primary" style="float: right;">Edit Company Information</button>
+                <button class="btn btn-primary"  style="float: right;">Edit Company Information</button>
             </div>
         </div>
     </div>
@@ -227,28 +227,167 @@
            <form method="POST" class="user" id="supplierForm" enctype="multipart/form-data">  
                 {% csrf_token %}
                 <div class="form-group">
-                    {{form.company_name}}
+                    {{supplier_form.company_name}}
                 </div>
                 <div class="form-group">
-                    {{form.building}}
+                    {{supplier_form.building}}
                 </div>
                 <div class="form-group">
-                    {{form.road}}
+                    {{supplier_form.road}}
                 </div>
                 <div class="form-group">
-                    {{form.street}}
+                    {{supplier_form.street}}
                 </div>
                 <div class="form-group">
-                    {{form.city}}
+                    {{supplier_form.city}}
                 </div>
                 <div class="form-group">
-                    {{form.country}}
+                    {{supplier_form.country}}
                 </div>
                 <div class="form-group">
-                    {{form.years_of_operations}}
+                    {{supplier_form.years_of_operations}}
                 </div>
                 <div class="form-group">
-                    {{form.kra_pin}}
+                    {{supplier_form.kra_pin}}
+                </div>
+                 
+                <div class="clearfix"></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Contact Information</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form method="POST" class="user" id="supplierForm" enctype="multipart/form-data">  
+                {% csrf_token %}
+                <div class="form-group">
+                    {{contact_form.contact_person_name}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.contact_person_title}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.contact_person_email}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.contact_person_phone_number}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.company_phone_number}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.company_email}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.finance_person_name}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.finance_person_email}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.finance_person_phone_number}}
+                </div>
+                <div class="form-group">
+                    {{contact_form.company_website}}
+                </div>
+                 
+                <div class="clearfix"></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Account Information</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form method="POST" class="user" id="supplierForm" enctype="multipart/form-data">  
+                {% csrf_token %}
+                <div class="form-group">
+                    {{account_form.account_number}}
+                </div>
+                <div class="form-group">
+                    {{account_form.account_holder_name}}
+                </div>
+                <div class="form-group">
+                    {{account_form.bank_name}}
+                </div>
+                <div class="form-group">
+                    {{account_form.branch_name}}
+                </div>
+                <div class="form-group">
+                    {{account_form.bank_code}}
+                </div>
+                <div class="form-group">
+                    {{account_form.branch_code}}
+                </div>
+                <div class="form-group">
+                    {{account_form.currency}}
+                </div>
+                 
+                <div class="clearfix"></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="companyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Company Information</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <form method="POST" class="user" id="supplierForm" enctype="multipart/form-data">  
+                {% csrf_token %}
+                <div class="form-group">
+                    {{company_form.company_name}}
+                </div>
+                <div class="form-group">
+                    {{company_form.building}}
+                </div>
+                <div class="form-group">
+                    {{company_form.road}}
+                </div>
+                <div class="form-group">
+                    {{company_form.street}}
+                </div>
+                <div class="form-group">
+                    {{company_form.city}}
+                </div>
+                <div class="form-group">
+                    {{company_form.country}}
+                </div>
+                <div class="form-group">
+                    {{company_form.years_of_operations}}
+                </div>
+                <div class="form-group">
+                    {{company_form.kra_pin}}
                 </div>
                  
                 <div class="clearfix"></div>
