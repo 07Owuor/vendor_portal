@@ -73,17 +73,20 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     'https://d452-197-232-46-10.ngrok-free.app',
     'https://vendorportal.herokuapp.com',
+    'http://vendors.saner.gy',
 
 ]
 
 CORS_ORIGIN_WHITELIST = [
     'https://d452-197-232-46-10.ngrok-free.app',
     'https://vendorportal.herokuapp.com',
+    'http://vendors.saner.gy',
 
 ]
 CSRF_TRUSTED_ORIGINS = [
     'https://d452-197-232-46-10.ngrok-free.app',
     'https://vendorportal.herokuapp.com',
+    'http://vendors.saner.gy',
 ]
 CORS_ALLOW_HEADERS = [
     "accept",
