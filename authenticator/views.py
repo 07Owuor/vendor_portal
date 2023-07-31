@@ -30,6 +30,7 @@ def login_user(request):
                 if response.status_code == 200:
                     # Authentication successful
                     user_response = response.json()
+                    print(user_response)
 
                     user_data = user_response['result']
                     print(user_data)

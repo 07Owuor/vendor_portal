@@ -387,6 +387,29 @@ def vendor_payments(request):
         return redirect('login')
 
 
+def download_vendor_payments(request):
+    if 'partner_id' in request.session:
+        partner_id = request.session['partner_id']
+        session_id = request.session['session_id']
+        headers = {
+            'Cookie': session_id
+        }
+
+        document_response = requests.get(
+            'http://odoo.develop.saner.gy/purchase/pop_download/[partner_id]/[payment_id]',
+            headers=headers
+        )
+        document_data = document_response.json()
+        data = {
+            "data": document_data["data"]
+        }
+
+        return render(request, data)
+
+    else:
+        return redirect('login')
+
+
 def vendor_rfq(request):
     template_name = "home/rfq.html"
     if 'partner_id' in request.session:
@@ -578,6 +601,13 @@ def vendor_details(request):
             headers=headers
         )
         prof_data = prof_response.json()
+
+        tax_response = requests.get(
+            f'https://odoo.develop.saner.gy/account_custom/whvat_cert?partnerId={partner_id}',
+            headers=headers
+        )
+
+        tax_data = tax_response.json()
 
         if request.method == 'POST':
             supplier_form = SupplierDetailForm(request.POST or None)
