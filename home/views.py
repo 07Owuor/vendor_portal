@@ -186,7 +186,6 @@ def post_po_receipt(request, po_id):
                 "vals": vals
             }
 
-
             post_response = requests.post(
                 'https://odoo.develop.saner.gy/purchase_custom/create_delivery_receipt',
                 json=payload,
